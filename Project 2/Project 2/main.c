@@ -68,6 +68,7 @@ void init_USART(){
 
 void init_timer0() {
 
+	TIMSK0 = 0;	TCCR0B = (0b00000101);	TCNT0 = 6;
 }
 
 void init_timer1() {
