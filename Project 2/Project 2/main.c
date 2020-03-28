@@ -7,6 +7,24 @@
 
 #include <avr/io.h>
 
+void init_adc() {
+
+}
+void init_usart(){
+	
+}
+
+void init_timer0() {
+
+}
+
+void init_timer1() {
+	
+}
+
+void init_timer2() {
+	
+}
 
 int main(void)
 {
