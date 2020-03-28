@@ -57,6 +57,7 @@ void init_adc() {
 
 void init_ports() {
 
+	PORTB = (1<<3);		// Initialize turn bit 3 to output
 }
 
 void init_USART(){
