@@ -10,6 +10,11 @@
 void init_adc() {
 
 }
+
+void init_ports() {
+
+}
+
 void init_usart(){
 	UCSR0A	= 0x00;
 	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXC0);  /*enable receiver, transmitter and transmit interrupt*/
