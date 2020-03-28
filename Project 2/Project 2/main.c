@@ -67,12 +67,15 @@ void init_USART(){
 }
 
 void init_timer0() {
-
+	
+	TCCR0A = 0;
 	TIMSK0 = 0;	TCCR0B = (0b00000101);	TCNT0 = 6;
 }
 
 void init_timer1() {
 	
+	TCCR1A = 0;
+	TCCR1B = (0b00000010);	TIMSK1 = (0b00100001);
 }
 
 void init_timer2() {
