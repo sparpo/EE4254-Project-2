@@ -21,6 +21,8 @@ Discarded input sections
  .bss           0x00000000        0x0 main.o
  .text.init_adc
                 0x00000000        0x2 main.o
+ .text.init_ports
+                0x00000000        0x2 main.o
  .text.init_timer0
                 0x00000000        0x2 main.o
  .text.init_timer1
@@ -428,38 +430,38 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x58
+.debug_aranges  0x00000000       0x60
  *(.debug_aranges)
  .debug_aranges
-                0x00000000       0x58 main.o
+                0x00000000       0x60 main.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x85b
+.debug_info     0x00000000      0x870
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5f4 D:/Program Files/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_info    0x000005f4      0x267 main.o
+ .debug_info    0x000005f4      0x27c main.o
 
 .debug_abbrev   0x00000000      0x6d3
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x5a2 D:/Program Files/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/avr5/crtatmega328p.o
  .debug_abbrev  0x000005a2      0x131 main.o
 
-.debug_line     0x00000000      0x2d2
+.debug_line     0x00000000      0x2e3
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x133 D:/Program Files/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_line    0x00000133      0x19f main.o
+ .debug_line    0x00000133      0x1b0 main.o
 
-.debug_frame    0x00000000       0xb0
+.debug_frame    0x00000000       0xc0
  *(.debug_frame)
- .debug_frame   0x00000000       0xb0 main.o
+ .debug_frame   0x00000000       0xc0 main.o
 
-.debug_str      0x00000000      0x3ca
+.debug_str      0x00000000      0x3d5
  *(.debug_str)
  .debug_str     0x00000000      0x208 D:/Program Files/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.3.300/gcc/dev/atmega328p/avr5/crtatmega328p.o
- .debug_str     0x00000208      0x1c2 main.o
-                                0x1fb (size before relaxing)
+ .debug_str     0x00000208      0x1cd main.o
+                                0x206 (size before relaxing)
 
 .debug_loc      0x00000000       0xc4
  *(.debug_loc)
@@ -483,9 +485,9 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x48
+.debug_ranges   0x00000000       0x50
  *(.debug_ranges)
- .debug_ranges  0x00000000       0x48 main.o
+ .debug_ranges  0x00000000       0x50 main.o
 
 .debug_macro
  *(.debug_macro)
