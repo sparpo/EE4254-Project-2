@@ -63,13 +63,13 @@ void init_adc() {
 void init_ports() {
 	
 	DDRB = (1<<3);		// Initialize turn bit 3 to output
-	PORTB = (1<<3);		// Initialize turn bit 3 to output
+	PORTB = 0;		// Initialize to all off	
 }
 
 void init_USART() {
 	
 	UCSR0A	= (1<<RXC0) | (1<<TXC0); // enable RX and TX
-	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXC0) | (1<<TXCIE0) | (0<<UCSZ02);  /*enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits*/
+	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXC0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
 	UBRR0	= 103;  /*baud rate = 9600*/
 	UCSR0C = (0b00000110); //setting data to 8 bits
 	
