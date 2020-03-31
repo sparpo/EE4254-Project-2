@@ -16,13 +16,15 @@ void init_timer2(void);
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
+
+/*message arrays*/
+char msg1[] = {"Unrecognized command"};
+	
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
 unsigned char queue[50];       /*character queue*/
 unsigned int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
-/*message arrays*/
-char msg1[] = {"Unrecognized command"};
 	
 enum adc{Volt,Bright,Temp} input;
 	
@@ -120,8 +122,8 @@ int main(void)
 	return 1;
 }
 void init_adc() {
-	ADMUX = 0b01000010; //sets voltage ref to Vcc and starts ADC2
-	ADCSRA  = 0b11101111; //enable adc, starts conversion, enable interrupt, sets prescalar 128
+	ADMUX = (1<<6)|(1<<1); //sets voltage ref to Vcc and starts ADC2
+	ADCSRA  = (1<<7)|(1<<6)|(1<<5)|(1<<3)|(7<<0); //enable adc, starts conversion, enable interrupt, sets prescalar 128
 	ADCSRB = (1<<2);// sets timer0 overflow 
 
 }
@@ -144,18 +146,18 @@ void init_USART() {
 void init_timer0() {
 	
 	TCCR0A = 0;
-	TIMSK0 = 0;	TCCR0B = (0b00000101); // prescalar 1024	TCNT0 = 6; // TCNT0 set to 6 so that will cause timer overflow after 16 ms
+	TIMSK0 = 0;	TCCR0B = (5<<0); // prescalar 1024	TCNT0 = 6; // TCNT0 set to 6 so that will cause timer overflow after 16 ms
 }
 
 void init_timer1() {
 	
 	TCCR1A = 0;
-	TCCR1B = (0b00000010); // prescalar 8 	TIMSK1 = (0b00100001); //Input Capture set for falling edge with noise control turned OFF , Input Capture and Timer1 Overflow Interrupts enable
+	TCCR1B = (1<<1); // prescalar 8 	TIMSK1 = (1<<5) | (1<<0); //Input Capture set for falling edge with noise control turned OFF , Input Capture and Timer1 Overflow Interrupts enable
 }
 
 void init_timer2() {
 	
-	TCCR0A = (0b10000001); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode	TCCR0B = (0b00000110); // Phase Correct PWM Mode, prescalar 256
+	TCCR0A = (1<<7)|(1<<0); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode	TCCR0B = (6<<0); // Phase Correct PWM Mode, prescalar 256
 	OCR2A = 0; // turn off led
 	
 }
@@ -195,22 +197,19 @@ ISR (ADC_vect)//handles ADC interrupts
 	switch(input) {
 		
 		case Volt :
-			ADMUX = 0b01000000; //adc0
-			TIFR0 = 0b00000001;
+			ADMUX = (1<<7); //adc0
 		break;
 		
 		case Bright :
-			ADMUX = 0b01000001; //adc1
-			TIFR0 = 0b00000001;
+			ADMUX = (1<<7) | (1<<0); //adc1
 		break;
 		
 		case Temp :
-			ADMUX = 0b01000010; //adc2
-			TIFR0 = 0b00000001;
+			ADMUX = (1<<7) | (1<<1); //adc2
 		break;
 		default:
-			ADMUX = 0b01000010; //adc2
+			ADMUX = (1<<7) | (1<<1); //adc2
 		break;
 	}
-
+	TIFR0 = TIFR0 & ~(1<<0); //clears Counter0 overflow
 }
