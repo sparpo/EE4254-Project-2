@@ -16,9 +16,10 @@ void init_timer2(void);
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the que*/
+unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
 unsigned char queue[50];       /*character queue*/
 unsigned int adc_reading; // adc value saved here
+volatile unsigned int new_adc_data; // flag to show new data
 
 /*message arrays*/
 char msg1[] = {"That was an a or an A."};
@@ -97,7 +98,7 @@ void init_timer1() {
 
 void init_timer2() {
 	
-	TCCR0A = (0b10000001); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode	TCCR0B = (0b00000110); // Phase Correct PWM Mode, prescalr 256
+	TCCR0A = (0b10000001); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode	TCCR0B = (0b00000110); // Phase Correct PWM Mode, prescalar 256
 	OCR2A = 0; // turn off led
 	
 }
@@ -133,4 +134,6 @@ ISR (ADC_vect)//handles ADC interrupts
 {
 	
 	adc_reading = ADC;
+	new_adc_data = 1;
+
 }
