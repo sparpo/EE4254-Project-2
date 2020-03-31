@@ -3,31 +3,31 @@ Project 2.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         0000004a  00800100  00000194  00000228  2**0
+  0 .data         0000004a  00800100  0000019a  0000022e  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000194  00000000  00000000  00000094  2**1
+  1 .text         0000019a  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000034  0080014a  0080014a  00000272  2**0
+  2 .bss          00000035  0080014a  0080014a  00000278  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000272  2**0
+  3 .comment      00000030  00000000  00000000  00000278  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002a4  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002a8  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000060  00000000  00000000  000002e4  2**0
+  5 .debug_aranges 00000060  00000000  00000000  000002e8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000875  00000000  00000000  00000344  2**0
+  6 .debug_info   000008aa  00000000  00000000  00000348  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000006bd  00000000  00000000  00000bb9  2**0
+  7 .debug_abbrev 000006d7  00000000  00000000  00000bf2  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000326  00000000  00000000  00001276  2**0
+  8 .debug_line   00000326  00000000  00000000  000012c9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000c0  00000000  00000000  0000159c  2**2
+  9 .debug_frame  000000c0  00000000  00000000  000015f0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000003d6  00000000  00000000  0000165c  2**0
+ 10 .debug_str    000003ea  00000000  00000000  000016b0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000000c4  00000000  00000000  00001a32  2**0
+ 11 .debug_loc    000000c4  00000000  00000000  00001a9a  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000050  00000000  00000000  00001af6  2**0
+ 12 .debug_ranges 00000050  00000000  00000000  00001b5e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -53,7 +53,7 @@ Disassembly of section .text:
   44:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   48:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   4c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
-  50:	0c 94 a8 00 	jmp	0x150	; 0x150 <__vector_20>
+  50:	0c 94 ab 00 	jmp	0x156	; 0x156 <__vector_20>
   54:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   58:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
   5c:	0c 94 51 00 	jmp	0xa2	; 0xa2 <__bad_interrupt>
@@ -72,7 +72,7 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e4 e9       	ldi	r30, 0x94	; 148
+  7a:	ea e9       	ldi	r30, 0x9A	; 154
   7c:	f1 e0       	ldi	r31, 0x01	; 1
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
@@ -91,11 +91,11 @@ Disassembly of section .text:
   92:	1d 92       	st	X+, r1
 
 00000094 <.do_clear_bss_start>:
-  94:	ae 37       	cpi	r26, 0x7E	; 126
+  94:	af 37       	cpi	r26, 0x7F	; 127
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
   9a:	0e 94 87 00 	call	0x10e	; 0x10e <main>
-  9e:	0c 94 c8 00 	jmp	0x190	; 0x190 <_exit>
+  9e:	0c 94 cb 00 	jmp	0x196	; 0x196 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -172,112 +172,115 @@ void sendmsg (char *s)
  10c:	08 95       	ret
 
 0000010e <main>:
+enum adc{ADC0,ADC1,ADC2} input;
 
 int main(void)
 {
 	char ch;  /* character variable for received character*/
-
+	input = ADC1;
+ 10e:	81 e0       	ldi	r24, 0x01	; 1
+ 110:	80 93 7e 01 	sts	0x017E, r24	; 0x80017e <input>
 	init_USART();
- 10e:	0e 94 53 00 	call	0xa6	; 0xa6 <init_USART>
+ 114:	0e 94 53 00 	call	0xa6	; 0xa6 <init_USART>
 
 
 	sei(); /*global interrupt enable */
- 112:	78 94       	sei
+ 118:	78 94       	sei
 
 	while (1)
 	{
 		if (UCSR0A & (1<<RXC0)) /*check for character received*/
- 114:	c0 ec       	ldi	r28, 0xC0	; 192
- 116:	d0 e0       	ldi	r29, 0x00	; 0
+ 11a:	c0 ec       	ldi	r28, 0xC0	; 192
+ 11c:	d0 e0       	ldi	r29, 0x00	; 0
 		{
 			ch = UDR0;    /*get character sent from PC*/
- 118:	06 ec       	ldi	r16, 0xC6	; 198
- 11a:	10 e0       	ldi	r17, 0x00	; 0
+ 11e:	06 ec       	ldi	r16, 0xC6	; 198
+ 120:	10 e0       	ldi	r17, 0x00	; 0
 
 	sei(); /*global interrupt enable */
 
 	while (1)
 	{
 		if (UCSR0A & (1<<RXC0)) /*check for character received*/
- 11c:	88 81       	ld	r24, Y
- 11e:	88 23       	and	r24, r24
- 120:	ec f7       	brge	.-6      	; 0x11c <main+0xe>
+ 122:	88 81       	ld	r24, Y
+ 124:	88 23       	and	r24, r24
+ 126:	ec f7       	brge	.-6      	; 0x122 <main+0x14>
 		{
 			ch = UDR0;    /*get character sent from PC*/
- 122:	f8 01       	movw	r30, r16
- 124:	80 81       	ld	r24, Z
+ 128:	f8 01       	movw	r30, r16
+ 12a:	80 81       	ld	r24, Z
 			switch (ch)
- 126:	81 36       	cpi	r24, 0x61	; 97
- 128:	21 f0       	breq	.+8      	; 0x132 <main+0x24>
- 12a:	82 36       	cpi	r24, 0x62	; 98
- 12c:	39 f0       	breq	.+14     	; 0x13c <main+0x2e>
- 12e:	81 34       	cpi	r24, 0x41	; 65
- 130:	51 f4       	brne	.+20     	; 0x146 <main+0x38>
+ 12c:	81 36       	cpi	r24, 0x61	; 97
+ 12e:	21 f0       	breq	.+8      	; 0x138 <main+0x2a>
+ 130:	82 36       	cpi	r24, 0x62	; 98
+ 132:	39 f0       	breq	.+14     	; 0x142 <main+0x34>
+ 134:	81 34       	cpi	r24, 0x41	; 65
+ 136:	51 f4       	brne	.+20     	; 0x14c <main+0x3e>
 			{
 				case 'A':
 				case 'a':
 				sendmsg(msg1); /*send first message*/
- 132:	82 e3       	ldi	r24, 0x32	; 50
- 134:	91 e0       	ldi	r25, 0x01	; 1
- 136:	0e 94 63 00 	call	0xc6	; 0xc6 <sendmsg>
+ 138:	82 e3       	ldi	r24, 0x32	; 50
+ 13a:	91 e0       	ldi	r25, 0x01	; 1
+ 13c:	0e 94 63 00 	call	0xc6	; 0xc6 <sendmsg>
 				break;
- 13a:	f0 cf       	rjmp	.-32     	; 0x11c <main+0xe>
+ 140:	f0 cf       	rjmp	.-32     	; 0x122 <main+0x14>
 				case 'b':
 				sendmsg(msg2); /*send second message*/
- 13c:	8a e1       	ldi	r24, 0x1A	; 26
- 13e:	91 e0       	ldi	r25, 0x01	; 1
- 140:	0e 94 63 00 	call	0xc6	; 0xc6 <sendmsg>
+ 142:	8a e1       	ldi	r24, 0x1A	; 26
+ 144:	91 e0       	ldi	r25, 0x01	; 1
+ 146:	0e 94 63 00 	call	0xc6	; 0xc6 <sendmsg>
 				break;
- 144:	eb cf       	rjmp	.-42     	; 0x11c <main+0xe>
+ 14a:	eb cf       	rjmp	.-42     	; 0x122 <main+0x14>
 				default:
 				sendmsg(msg3); /*send default message*/
- 146:	80 e0       	ldi	r24, 0x00	; 0
- 148:	91 e0       	ldi	r25, 0x01	; 1
- 14a:	0e 94 63 00 	call	0xc6	; 0xc6 <sendmsg>
- 14e:	e6 cf       	rjmp	.-52     	; 0x11c <main+0xe>
+ 14c:	80 e0       	ldi	r24, 0x00	; 0
+ 14e:	91 e0       	ldi	r25, 0x01	; 1
+ 150:	0e 94 63 00 	call	0xc6	; 0xc6 <sendmsg>
+ 154:	e6 cf       	rjmp	.-52     	; 0x122 <main+0x14>
 
-00000150 <__vector_20>:
+00000156 <__vector_20>:
 
 /*this interrupt occurs whenever the */
 /*USART has completed sending a character*/
 
 ISR(USART_TX_vect)
 {
- 150:	1f 92       	push	r1
- 152:	0f 92       	push	r0
- 154:	0f b6       	in	r0, 0x3f	; 63
- 156:	0f 92       	push	r0
- 158:	11 24       	eor	r1, r1
- 15a:	8f 93       	push	r24
- 15c:	ef 93       	push	r30
- 15e:	ff 93       	push	r31
+ 156:	1f 92       	push	r1
+ 158:	0f 92       	push	r0
+ 15a:	0f b6       	in	r0, 0x3f	; 63
+ 15c:	0f 92       	push	r0
+ 15e:	11 24       	eor	r1, r1
+ 160:	8f 93       	push	r24
+ 162:	ef 93       	push	r30
+ 164:	ff 93       	push	r31
 	/*send next character and increment index*/
 	if (qcntr != sndcntr)
- 160:	e0 91 4a 01 	lds	r30, 0x014A	; 0x80014a <__data_end>
- 164:	80 91 4b 01 	lds	r24, 0x014B	; 0x80014b <qcntr>
- 168:	8e 17       	cp	r24, r30
- 16a:	51 f0       	breq	.+20     	; 0x180 <__vector_20+0x30>
+ 166:	e0 91 4a 01 	lds	r30, 0x014A	; 0x80014a <__data_end>
+ 16a:	80 91 4b 01 	lds	r24, 0x014B	; 0x80014b <qcntr>
+ 16e:	8e 17       	cp	r24, r30
+ 170:	51 f0       	breq	.+20     	; 0x186 <__vector_20+0x30>
 	UDR0 = queue[sndcntr++];
- 16c:	81 e0       	ldi	r24, 0x01	; 1
- 16e:	8e 0f       	add	r24, r30
- 170:	80 93 4a 01 	sts	0x014A, r24	; 0x80014a <__data_end>
- 174:	f0 e0       	ldi	r31, 0x00	; 0
- 176:	e4 5b       	subi	r30, 0xB4	; 180
- 178:	fe 4f       	sbci	r31, 0xFE	; 254
- 17a:	80 81       	ld	r24, Z
- 17c:	80 93 c6 00 	sts	0x00C6, r24	; 0x8000c6 <__DATA_REGION_ORIGIN__+0x66>
+ 172:	81 e0       	ldi	r24, 0x01	; 1
+ 174:	8e 0f       	add	r24, r30
+ 176:	80 93 4a 01 	sts	0x014A, r24	; 0x80014a <__data_end>
+ 17a:	f0 e0       	ldi	r31, 0x00	; 0
+ 17c:	e4 5b       	subi	r30, 0xB4	; 180
+ 17e:	fe 4f       	sbci	r31, 0xFE	; 254
+ 180:	80 81       	ld	r24, Z
+ 182:	80 93 c6 00 	sts	0x00C6, r24	; 0x8000c6 <__DATA_REGION_ORIGIN__+0x66>
 }
- 180:	ff 91       	pop	r31
- 182:	ef 91       	pop	r30
- 184:	8f 91       	pop	r24
- 186:	0f 90       	pop	r0
- 188:	0f be       	out	0x3f, r0	; 63
- 18a:	0f 90       	pop	r0
- 18c:	1f 90       	pop	r1
- 18e:	18 95       	reti
+ 186:	ff 91       	pop	r31
+ 188:	ef 91       	pop	r30
+ 18a:	8f 91       	pop	r24
+ 18c:	0f 90       	pop	r0
+ 18e:	0f be       	out	0x3f, r0	; 63
+ 190:	0f 90       	pop	r0
+ 192:	1f 90       	pop	r1
+ 194:	18 95       	reti
 
-00000190 <_exit>:
- 190:	f8 94       	cli
+00000196 <_exit>:
+ 196:	f8 94       	cli
 
-00000192 <__stop_program>:
- 192:	ff cf       	rjmp	.-2      	; 0x192 <__stop_program>
+00000198 <__stop_program>:
+ 198:	ff cf       	rjmp	.-2      	; 0x198 <__stop_program>

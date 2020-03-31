@@ -24,12 +24,11 @@ char msg1[] = {"That was an a or an A."};
 char msg2[] = {"That was a b, not an a."};
 char msg3[] = {"That was neither b nor a."};
 	
-	
+enum adc{ADC0,ADC1,ADC2} input;
 
 int main(void)
 {
 	char ch;  /* character variable for received character*/
-
 	init_USART();
 
 
@@ -57,6 +56,9 @@ int main(void)
 	return 1;
 }
 void init_adc() {
+	ADMUX = 0b01000010; //sets voltage ref
+	ADCSRA  = 0b11101111; //enable adc, starts conversion, enable interrupt, sets prescalar 128
+	ADCSRB = (1<<2);// sets free running mode
 
 }
 
