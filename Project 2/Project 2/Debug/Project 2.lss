@@ -3,31 +3,31 @@ Project 2.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         0000004a  00800100  00000252  000002e6  2**0
+  0 .data         0000004a  00800100  00000266  000002fa  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000252  00000000  00000000  00000094  2**1
+  1 .text         00000266  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000039  0080014a  0080014a  00000330  2**0
+  2 .bss          00000039  0080014a  0080014a  00000344  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  00000330  2**0
+  3 .comment      00000030  00000000  00000000  00000344  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000360  2**2
+  4 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000374  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000068  00000000  00000000  000003a0  2**0
+  5 .debug_aranges 00000068  00000000  00000000  000003b4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000916  00000000  00000000  00000408  2**0
+  6 .debug_info   00000916  00000000  00000000  0000041c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 000006de  00000000  00000000  00000d1e  2**0
+  7 .debug_abbrev 000006de  00000000  00000000  00000d32  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000003ab  00000000  00000000  000013fc  2**0
+  8 .debug_line   000003cf  00000000  00000000  00001410  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000e4  00000000  00000000  000017a8  2**2
+  9 .debug_frame  000000e4  00000000  00000000  000017e0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000411  00000000  00000000  0000188c  2**0
+ 10 .debug_str    00000412  00000000  00000000  000018c4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000010d  00000000  00000000  00001c9d  2**0
+ 11 .debug_loc    0000010d  00000000  00000000  00001cd6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000058  00000000  00000000  00001daa  2**0
+ 12 .debug_ranges 00000058  00000000  00000000  00001de3  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -72,7 +72,7 @@ Disassembly of section .text:
   74:	11 e0       	ldi	r17, 0x01	; 1
   76:	a0 e0       	ldi	r26, 0x00	; 0
   78:	b1 e0       	ldi	r27, 0x01	; 1
-  7a:	e2 e5       	ldi	r30, 0x52	; 82
+  7a:	e6 e6       	ldi	r30, 0x66	; 102
   7c:	f2 e0       	ldi	r31, 0x02	; 2
   7e:	02 c0       	rjmp	.+4      	; 0x84 <__do_copy_data+0x10>
   80:	05 90       	lpm	r0, Z+
@@ -95,7 +95,7 @@ Disassembly of section .text:
   96:	b2 07       	cpc	r27, r18
   98:	e1 f7       	brne	.-8      	; 0x92 <.do_clear_bss_loop>
   9a:	0e 94 ad 00 	call	0x15a	; 0x15a <main>
-  9e:	0c 94 27 01 	jmp	0x24e	; 0x24e <_exit>
+  9e:	0c 94 31 01 	jmp	0x262	; 0x262 <_exit>
 
 000000a2 <__bad_interrupt>:
   a2:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -393,40 +393,58 @@ ISR (ADC_vect)//handles ADC interrupts
 	switch(input) {
  21a:	80 91 7e 01 	lds	r24, 0x017E	; 0x80017e <input>
  21e:	81 30       	cpi	r24, 0x01	; 1
- 220:	41 f0       	breq	.+16     	; 0x232 <__vector_21+0x42>
+ 220:	51 f0       	breq	.+20     	; 0x236 <__vector_21+0x46>
  222:	18 f0       	brcs	.+6      	; 0x22a <__vector_21+0x3a>
  224:	82 30       	cpi	r24, 0x02	; 2
- 226:	49 f0       	breq	.+18     	; 0x23a <__vector_21+0x4a>
- 228:	0b c0       	rjmp	.+22     	; 0x240 <__vector_21+0x50>
+ 226:	69 f0       	breq	.+26     	; 0x242 <__vector_21+0x52>
+ 228:	12 c0       	rjmp	.+36     	; 0x24e <__vector_21+0x5e>
+		
 		case Volt :
 			ADMUX = 0b01000000; //adc0
  22a:	80 e4       	ldi	r24, 0x40	; 64
  22c:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
+			TIFR0 = 0b00000001;
+ 230:	81 e0       	ldi	r24, 0x01	; 1
+ 232:	85 bb       	out	0x15, r24	; 21
 		break;
- 230:	07 c0       	rjmp	.+14     	; 0x240 <__vector_21+0x50>
+ 234:	0f c0       	rjmp	.+30     	; 0x254 <__vector_21+0x64>
+		
 		case Bright :
 			ADMUX = 0b01000001; //adc1
- 232:	81 e4       	ldi	r24, 0x41	; 65
- 234:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
+ 236:	81 e4       	ldi	r24, 0x41	; 65
+ 238:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
+			TIFR0 = 0b00000001;
+ 23c:	81 e0       	ldi	r24, 0x01	; 1
+ 23e:	85 bb       	out	0x15, r24	; 21
 		break;
- 238:	03 c0       	rjmp	.+6      	; 0x240 <__vector_21+0x50>
+ 240:	09 c0       	rjmp	.+18     	; 0x254 <__vector_21+0x64>
+		
 		case Temp :
 			ADMUX = 0b01000010; //adc2
- 23a:	82 e4       	ldi	r24, 0x42	; 66
- 23c:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
+ 242:	82 e4       	ldi	r24, 0x42	; 66
+ 244:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
+			TIFR0 = 0b00000001;
+ 248:	81 e0       	ldi	r24, 0x01	; 1
+ 24a:	85 bb       	out	0x15, r24	; 21
+		break;
+ 24c:	03 c0       	rjmp	.+6      	; 0x254 <__vector_21+0x64>
+		default:
+			ADMUX = 0b01000010; //adc2
+ 24e:	82 e4       	ldi	r24, 0x42	; 66
+ 250:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
 		break;
 	}
 
- 240:	9f 91       	pop	r25
- 242:	8f 91       	pop	r24
- 244:	0f 90       	pop	r0
- 246:	0f be       	out	0x3f, r0	; 63
- 248:	0f 90       	pop	r0
- 24a:	1f 90       	pop	r1
- 24c:	18 95       	reti
+ 254:	9f 91       	pop	r25
+ 256:	8f 91       	pop	r24
+ 258:	0f 90       	pop	r0
+ 25a:	0f be       	out	0x3f, r0	; 63
+ 25c:	0f 90       	pop	r0
+ 25e:	1f 90       	pop	r1
+ 260:	18 95       	reti
 
-0000024e <_exit>:
- 24e:	f8 94       	cli
+00000262 <_exit>:
+ 262:	f8 94       	cli
 
-00000250 <__stop_program>:
- 250:	ff cf       	rjmp	.-2      	; 0x250 <__stop_program>
+00000264 <__stop_program>:
+ 264:	ff cf       	rjmp	.-2      	; 0x264 <__stop_program>
