@@ -29,8 +29,12 @@ char msg3[] = {"That was neither b nor a."};
 int main(void)
 {
 	char ch;  /* character variable for received character*/
-
+	init_ports();
 	init_USART();
+	init_adc();
+	init_timer0();
+	init_timer1();
+	init_timer2();
 
 
 	sei(); /*global interrupt enable */
@@ -89,6 +93,8 @@ void init_timer1() {
 
 void init_timer2() {
 	
+	TCCR0A = 0;
+	TIMSK0 = 0;	TCCR0B = (0b00000101);
 }
 
 void sendmsg (char *s)
