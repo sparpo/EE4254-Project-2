@@ -82,19 +82,20 @@ void init_USART() {
 void init_timer0() {
 	
 	TCCR0A = 0;
-	TIMSK0 = 0;	TCCR0B = (0b00000101);	TCNT0 = 6;
+	TIMSK0 = 0;	TCCR0B = (0b00000101); // prescalar 1024	TCNT0 = 6; // TCNT0 set to 6 so that will cause timer overflow after 16 ms
 }
 
 void init_timer1() {
 	
 	TCCR1A = 0;
-	TCCR1B = (0b00000010);	TIMSK1 = (0b00100001);
+	TCCR1B = (0b00000010); // prescalar 8 	TIMSK1 = (0b00100001); //Input Capture set for falling edge with noise control turned OFF , Input Capture and Timer1 Overflow Interrupts enable
 }
 
 void init_timer2() {
 	
-	TCCR0A = 0;
-	TIMSK0 = 0;	TCCR0B = (0b00000101);
+	TCCR0A = (0b10000001); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode	TCCR0B = (0b00000110); // Phase Correct PWM Mode, prescalr 256
+	OCR2A = 0; // turn off led
+	
 }
 
 void sendmsg (char *s)
