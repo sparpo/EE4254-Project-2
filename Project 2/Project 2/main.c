@@ -18,6 +18,7 @@ void init_timer2(void);
 
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the que*/
 unsigned char queue[50];       /*character queue*/
+unsigned int adc_reading; // adc value saved here
 
 /*message arrays*/
 char msg1[] = {"That was an a or an A."};
@@ -126,4 +127,10 @@ ISR(USART_TX_vect)
 	/*send next character and increment index*/
 	if (qcntr != sndcntr)
 	UDR0 = queue[sndcntr++];
+}
+
+ISR (ADC_vect)//handles ADC interrupts
+{
+	
+	adc_reading = ADC;
 }
