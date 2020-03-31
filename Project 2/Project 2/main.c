@@ -26,7 +26,7 @@ char msg1[] = {"That was an a or an A."};
 char msg2[] = {"That was a b, not an a."};
 char msg3[] = {"That was neither b nor a."};
 	
-enum adc{ADC0,ADC1,ADC2} input;
+enum adc{Volt,Bright,Temp} input;
 
 int main(void)
 {
