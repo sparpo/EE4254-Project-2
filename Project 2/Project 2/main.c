@@ -135,5 +135,18 @@ ISR (ADC_vect)//handles ADC interrupts
 	
 	adc_reading = ADC;
 	new_adc_data = 1;
+	switch(input) {
+		case Volt :
+			ADMUX = 0b01000000; //adc0
+		break;
+		case Bright :
+			ADMUX = 0b01000001; //adc1
+		break;
+		case Temp :
+			ADMUX = 0b01000010; //adc2
+		break;
+		
+		
+	}
 
 }
