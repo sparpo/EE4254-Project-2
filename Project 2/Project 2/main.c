@@ -62,9 +62,9 @@ int main(void)
 	return 1;
 }
 void init_adc() {
-	ADMUX = 0b01000010; //sets voltage ref
+	ADMUX = 0b01000010; //sets voltage ref to Vcc and starts ADC2
 	ADCSRA  = 0b11101111; //enable adc, starts conversion, enable interrupt, sets prescalar 128
-	ADCSRB = (1<<2);// sets free running mode
+	ADCSRB = (1<<2);// sets timer0 overflow 
 
 }
 
