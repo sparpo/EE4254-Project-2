@@ -22,11 +22,11 @@ unsigned int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
 /*message arrays*/
-char msg1[] = {"That was an a or an A."};
-char msg2[] = {"That was a b, not an a."};
-char msg3[] = {"That was neither b nor a."};
+char msg1[] = {"Unrecognized command"};
 	
 enum adc{Volt,Bright,Temp} input;
+	
+unsigned int enContdisplay = 0; //enable continuous display
 
 int main(void)
 {
@@ -42,22 +42,79 @@ int main(void)
 	sei(); /*global interrupt enable */
 
 	while (1)
-	{
+	{	
 		if (UCSR0A & (1<<RXC0)) /*check for character received*/
 		{
 			ch = UDR0;    /*get character sent from PC*/
-			switch (ch)
-			{
+			switch (ch) { //character input
+				case 'M':
+				case 'm':
+				input = Temp;
+				break;
+				
+				case 'N':
+				case 'n':
+				input = Bright;
+				break;
+				
+				case 'P':
+				case 'p':
+				input = Volt;
+				break;
+				
+				case 'T':
+				case 't':
+				if (input == Temp) {
+					//Report temp in degrees
+				} else {
+					//Give warning
+				}
+				break;
+				
+				case 'L':
+				case 'l':
+				if (input == Bright) {
+					//Report brightness in degrees
+					} else {
+					//Give warning
+				}
+				break;
+				
 				case 'A':
 				case 'a':
-				sendmsg(msg1); /*send first message*/
+				//Report ADC value
 				break;
-				case 'b':
-				sendmsg(msg2); /*send second message*/
+				
+				case 'V':
+				case 'v':
+				//Report ADC value in mV
 				break;
+				
+				case 'C':
+				case 'c':
+					enContdisplay = 1; //enable continuous adc display
+				break;
+				
+				case 'E':
+				case 'e':
+					enContdisplay = 0; //disable continuous adc display
+				break;
+				
+				case 'S':
+				case 's':
+				//report current value of OCR2B register
+				break;
+				
 				default:
-				sendmsg(msg3); /*send default message*/
+				sendmsg(msg1); /*send default message*/
 			}
+		}
+		
+		if(new_adc_data == 1) {
+			if(enContdisplay) {
+				//send new adc data to usart
+			}
+			new_adc_data=0;
 		}
 	}
 	return 1;
