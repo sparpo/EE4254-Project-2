@@ -139,14 +139,17 @@ ISR (ADC_vect)//handles ADC interrupts
 		
 		case Volt :
 			ADMUX = 0b01000000; //adc0
+			TIFR0 = 0b00000001;
 		break;
 		
 		case Bright :
 			ADMUX = 0b01000001; //adc1
+			TIFR0 = 0b00000001;
 		break;
 		
 		case Temp :
 			ADMUX = 0b01000010; //adc2
+			TIFR0 = 0b00000001;
 		break;
 		default:
 			ADMUX = 0b01000010; //adc2
