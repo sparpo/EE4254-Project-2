@@ -24,8 +24,8 @@ char msg3[] = {"ADC set to read output of LDR"};
 char msg4[] = {"ADC set to read output of potentiometer"};
 char msg5[] = {"Must set ADC to read output of temperature first by typing 'M' or 'm'"};
 char msg6[] = {"Must set ADC to read output of LDR first by typing 'N' or 'n'"};
-char msg7[] = {"Bright"};
-char msg8[] = {"Dark"};
+char msg7[] = {"LDR = Bright"};
+char msg8[] = {"LDR = Dark"};
 		
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
 unsigned char queue[50];       /*character queue*/
@@ -108,7 +108,7 @@ int main(void)
 				case 'a':
 				{
 				char data[50];
-				sprintf(data, "ADC value is %d", adc_reading); //Report ADC value
+				sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
 				sendmsg(data);
 				break;
 				}
@@ -119,7 +119,7 @@ int main(void)
 				char data[50];
 				int adc_mV;
 				adc_mV = (adc_reading/1000)*5000;
-				sprintf(data, "ADC value is %d mV", adc_mV); //Report ADC value in mV
+				sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
 				sendmsg(data);
 				break;
 				}
@@ -136,11 +136,14 @@ int main(void)
 				
 				case 'S':
 				case 's':
-				//char msg[30];
-				//report current value of OCR2A register
-				//sprintf();
+				{
+				char data[50];
+				double OC;
+				OC = OCR2A;
+				sprintf(data, "OCR2A = %f", OC);
+				sendmsg(data);
 				break;
-				
+				}
 				default:
 				sendmsg(msg1); /*send default message*/
 			}
