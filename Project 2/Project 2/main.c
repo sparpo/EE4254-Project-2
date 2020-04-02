@@ -24,6 +24,8 @@ char msg3[] = {"ADC set to read output of LDR"};
 char msg4[] = {"ADC set to read output of potentiometer"};
 char msg5[] = {"Must set ADC to read output of temperature first by typing 'M' or 'm'"};
 char msg6[] = {"Must set ADC to read output of LDR first by typing 'N' or 'n'"};
+char msg7[] = {"Bright"};
+char msg8[] = {"Dark"};
 		
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
 unsigned char queue[50];       /*character queue*/
@@ -31,7 +33,7 @@ unsigned int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
 	
-enum adc{Volt,Bright,Temp} input;
+enum adc{Volt,LDR,Temp} input;
 	
 unsigned int enContdisplay = 0; //enable continuous display
 
@@ -63,7 +65,7 @@ int main(void)
 				
 				case 'N':
 				case 'n':
-				input = Bright;
+				input = LDR;
 				sendmsg(msg3);
 				break;
 				
@@ -87,10 +89,15 @@ int main(void)
 				
 				case 'L':
 				case 'l':
-				if (input == Bright) {
-					//double light;
-					//Report brightness in degrees
-					//sprintf('Brightness = %f deg Centigrade', light);
+				if (input == LDR) {
+						if(adc_reading>512)
+						{
+							sendmsg(msg7);
+						}
+						else
+						{
+							sendmsg(msg8);
+						}
 					} else {
 					//Give warning
 					sendmsg(msg6);
@@ -100,13 +107,14 @@ int main(void)
 				case 'A':
 				case 'a':
 				//Report ADC value
-				//sprintf();
+				printf("ADC value is %d", adc_reading);
 				break;
 				
 				case 'V':
 				case 'v':
-				//Report ADC value in mV
-				//sprintf();
+				double adc_mV;
+				
+				printf();
 				break;
 				
 				case 'C':
@@ -224,7 +232,7 @@ ISR (ADC_vect)//handles ADC interrupts
 			ADMUX = (1<<7); //adc0
 		break;
 		
-		case Bright :
+		case LDR :
 			ADMUX = (1<<7) | (1<<0); //adc1
 		break;
 		
