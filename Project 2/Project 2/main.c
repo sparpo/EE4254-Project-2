@@ -54,74 +54,75 @@ int main(void)
 		{
 			ch = UDR0;    /*get character sent from PC*/
 			switch (ch) { //character input
-				//case 'M':
-				case ('M'||'m'):
+				
+				case 'M':
+				case 'm':
 				input = Temp;
 				sendmsg(msg2);
 				break;
 				
-				//case 'N':
-				case ('N'||'n'):
+				case 'N':
+				case 'n':
 				input = Bright;
 				sendmsg(msg3);
 				break;
 				
-				//case 'P':
-				case ('P'||'p'):
+				case 'P':
+				case 'p':
 				input = Volt;
 				sendmsg(msg4);
 				break;
 				
-				//case 'T':
-				case ('T'||'t'):
+				case 'T':
+				case 't':
 				if (input == Temp) {
-					double temp;
+					//double temp;
 					//Report temp in degrees
-					sprintf('LM35 Temperature = %f deg C',temp);
+					//sprintf('LM35 Temperature = %f deg C',temp);
 				} else {
 					//Give warning
 					sendmsg(msg5);
 				}
 				break;
 				
-				//case 'L':
-				case('L'||'l'):
+				case 'L':
+				case 'l':
 				if (input == Bright) {
-					double light;
+					//double light;
 					//Report brightness in degrees
-					sprintf('Brightness = %f deg Centigrade', light);
+					//sprintf('Brightness = %f deg Centigrade', light);
 					} else {
 					//Give warning
 					sendmsg(msg6);
 				}
 				break;
 				
-				//case 'A':
-				case ('A'||'a'):
+				case 'A':
+				case 'a':
 				//Report ADC value
-				sprintf();
+				//sprintf();
 				break;
 				
-				//case 'V':
-				case ('V'||'v'):
+				case 'V':
+				case 'v':
 				//Report ADC value in mV
-				sprintf();
+				//sprintf();
 				break;
 				
-				//case 'C':
-				case ('C'||'c'):
+				case 'C':
+				case 'c':
 					enContdisplay = 1; //enable continuous adc display
 				break;
 				
-				//case 'E':
-				case ('E'||'e'):
+				case 'E':
+				case 'e':
 					enContdisplay = 0; //disable continuous adc display
 				break;
 				
-				//case 'S':
-				case ('S'||'s'):
+				case 'S':
+				case 's':
 				//report current value of OCR2A register
-				sprintf();
+				//sprintf();
 				break;
 				
 				default:
