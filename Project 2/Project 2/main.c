@@ -35,7 +35,7 @@ volatile unsigned int new_adc_data; // flag to show new data
 	
 enum adc{Volt,LDR,Temp} input;
 	
-unsigned int enContdisplay = 0; //enable continuous display
+unsigned int enContDisplay = 0; //enable continuous display
 
 int main(void)
 {
@@ -119,12 +119,12 @@ int main(void)
 				
 				case 'C':
 				case 'c':
-					enContdisplay = 1; //enable continuous adc display
+					enContDisplay = 1; //enable continuous adc display
 				break;
 				
 				case 'E':
 				case 'e':
-					enContdisplay = 0; //disable continuous adc display
+					enContDisplay = 0; //disable continuous adc display
 				break;
 				
 				case 'S':
@@ -138,8 +138,8 @@ int main(void)
 			}
 		}
 		
-		if(new_adc_data == 1) {
-			if(enContdisplay) {
+		if(new_adc_data) {
+			if(enContDisplay) {
 				//send new adc data to usart
 			}
 			new_adc_data=0;
@@ -241,7 +241,6 @@ ISR (ADC_vect)//handles ADC interrupts
 		break;
 		default:
 			ADMUX = (1<<7) | (1<<1); //adc2
-		break;
 	}
 	TIFR0 = TIFR0 & ~(1<<0); //clears Counter0 overflow
 }
