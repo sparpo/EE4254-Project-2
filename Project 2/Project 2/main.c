@@ -19,6 +19,9 @@ void init_timer2(void);
 
 /*message arrays*/
 char msg1[] = {"Unrecognized command"};
+char msg2[] = {"ADC set to read output of temperature sensor"};
+char msg3[] = {"ADC set to read output of LDR"};
+char msg4[] = {"ADC set to read output of potentiometer"};
 	
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
 unsigned char queue[50];       /*character queue*/
@@ -49,62 +52,72 @@ int main(void)
 		{
 			ch = UDR0;    /*get character sent from PC*/
 			switch (ch) { //character input
-				case 'M':
-				case 'm':
+				//case 'M':
+				case ('M'||'m'):
 				input = Temp;
+				sendmsg(msg2);
 				break;
 				
-				case 'N':
-				case 'n':
+				//case 'N':
+				case ('N'||'n'):
 				input = Bright;
+				sendmsg(msg3);
 				break;
 				
-				case 'P':
-				case 'p':
+				//case 'P':
+				case ('P'||'p'):
 				input = Volt;
+				sendmsg(msg4);
 				break;
 				
-				case 'T':
-				case 't':
+				//case 'T':
+				case ('T'||'t'):
 				if (input == Temp) {
 					//Report temp in degrees
+					sprintf();
 				} else {
 					//Give warning
+					sendmsg(msg5);
 				}
 				break;
 				
-				case 'L':
-				case 'l':
+				//case 'L':
+				case('L'||'l')'l':
 				if (input == Bright) {
 					//Report brightness in degrees
+					sprintf();
 					} else {
 					//Give warning
+					sendmsg(msg6);
 				}
 				break;
 				
-				case 'A':
-				case 'a':
+				//case 'A':
+				case ('A'||'a'):
 				//Report ADC value
+				sprintf();
 				break;
 				
-				case 'V':
-				case 'v':
+				//case 'V':
+				case ('V'||'v'):
 				//Report ADC value in mV
+				sprintf();
 				break;
 				
-				case 'C':
-				case 'c':
+				//case 'C':
+				case ('C'||'c'):
 					enContdisplay = 1; //enable continuous adc display
 				break;
 				
-				case 'E':
-				case 'e':
+				//case 'E':
+				case ('E'||'e'):
 					enContdisplay = 0; //disable continuous adc display
 				break;
 				
-				case 'S':
-				case 's':
-				//report current value of OCR2B register
+				//case 'S':
+				case ('S'||'s'):
+				//report current value of OCR2A register
+				sprintf();
 				break;
 				
 				default:
@@ -146,18 +159,24 @@ void init_USART() {
 void init_timer0() {
 	
 	TCCR0A = 0;
-	TIMSK0 = 0;	TCCR0B = (5<<0); // prescalar 1024	TCNT0 = 6; // TCNT0 set to 6 so that will cause timer overflow after 16 ms
+	TIMSK0 = 0;
+	TCCR0B = (5<<0); // prescalar 1024
+	TCNT0 = 6; // TCNT0 set to 6 so that will cause timer overflow after 16 ms
+
 }
 
 void init_timer1() {
 	
 	TCCR1A = 0;
-	TCCR1B = (1<<1); // prescalar 8 	TIMSK1 = (1<<5) | (1<<0); //Input Capture set for falling edge with noise control turned OFF , Input Capture and Timer1 Overflow Interrupts enable
+	TCCR1B = (1<<1); // prescalar 8 
+	TIMSK1 = (1<<5) | (1<<0); //Input Capture set for falling edge with noise control turned OFF , Input Capture and Timer1 Overflow Interrupts enable
+
 }
 
 void init_timer2() {
 	
-	TCCR0A = (1<<7)|(1<<0); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode	TCCR0B = (6<<0); // Phase Correct PWM Mode, prescalar 256
+	TCCR0A = (1<<7)|(1<<0); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode
+	TCCR0B = (6<<0); // Phase Correct PWM Mode, prescalar 256
 	OCR2A = 0; // turn off led
 	
 }
