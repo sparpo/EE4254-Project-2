@@ -22,7 +22,10 @@ char msg1[] = {"Unrecognized command"};
 char msg2[] = {"ADC set to read output of temperature sensor"};
 char msg3[] = {"ADC set to read output of LDR"};
 char msg4[] = {"ADC set to read output of potentiometer"};
-	
+char msg5[] = {"Must set ADC to read output of temperature first by typing 'M' or 'm'"};
+char msg6[] = {"Must set ADC to read output of LDR first by typing 'N' or 'n'"};
+char msg7[] = {"Must set ADC to read output of potentiometer first by typing 'P' or 'p'"};
+		
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
 unsigned char queue[50];       /*character queue*/
 unsigned int adc_reading; // adc value saved here
@@ -82,7 +85,7 @@ int main(void)
 				break;
 				
 				//case 'L':
-				case('L'||'l')'l':
+				case('L'||'l'):
 				if (input == Bright) {
 					//Report brightness in degrees
 					sprintf();
