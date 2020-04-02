@@ -106,16 +106,23 @@ int main(void)
 				
 				case 'A':
 				case 'a':
-				//Report ADC value
-				printf("ADC value is %d", adc_reading);
+				{
+				char data[50];
+				sprintf(data, "ADC value is %d", adc_reading); //Report ADC value
+				sendmsg(data);
 				break;
+				}
 				
 				case 'V':
 				case 'v':
-				double adc_mV;
-				
-				printf();
+				{
+				char data[50];
+				int adc_mV;
+				adc_mV = (adc_reading/1000)*5000;
+				sprintf(data, "ADC value is %d mV", adc_mV); //Report ADC value in mV
+				sendmsg(data);
 				break;
+				}
 				
 				case 'C':
 				case 'c':
@@ -129,6 +136,7 @@ int main(void)
 				
 				case 'S':
 				case 's':
+				//char msg[30];
 				//report current value of OCR2A register
 				//sprintf();
 				break;
