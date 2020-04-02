@@ -24,7 +24,6 @@ char msg3[] = {"ADC set to read output of LDR"};
 char msg4[] = {"ADC set to read output of potentiometer"};
 char msg5[] = {"Must set ADC to read output of temperature first by typing 'M' or 'm'"};
 char msg6[] = {"Must set ADC to read output of LDR first by typing 'N' or 'n'"};
-char msg7[] = {"Must set ADC to read output of potentiometer first by typing 'P' or 'p'"};
 		
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
 unsigned char queue[50];       /*character queue*/
@@ -76,8 +75,9 @@ int main(void)
 				//case 'T':
 				case ('T'||'t'):
 				if (input == Temp) {
+					double temp;
 					//Report temp in degrees
-					sprintf();
+					sprintf('LM35 Temperature = %f deg C',temp);
 				} else {
 					//Give warning
 					sendmsg(msg5);
@@ -87,8 +87,9 @@ int main(void)
 				//case 'L':
 				case('L'||'l'):
 				if (input == Bright) {
+					double light;
 					//Report brightness in degrees
-					sprintf();
+					sprintf('Brightness = %f deg Centigrade', light);
 					} else {
 					//Give warning
 					sendmsg(msg6);
