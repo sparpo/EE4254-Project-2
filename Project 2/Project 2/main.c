@@ -34,12 +34,17 @@ volatile unsigned int new_adc_data; // flag to show new data
 
 	
 enum adc{Volt,LDR,Temp} input;
-	
+enum active{pot,lit,temper,OCR,ADC_val} on; // potentiometer measuring active,LDR measuring active,LM35 sensor active, OC2RA, ADC value
+
 unsigned int enContDisplay = 0; //enable continuous display
 
 int main(void)
 {
+	int adc_mV;
+	double temp;
+	double OC;
 	char ch;  /* character variable for received character*/
+	char data[50];
 	init_ports();
 	init_USART();
 	init_adc();
@@ -78,9 +83,10 @@ int main(void)
 				case 'T':
 				case 't':
 				if (input == Temp) {
-					//double temp;
-					//Report temp in degrees
-					//sprintf('LM35 Temperature = %f deg C',temp);
+					//char data[50];
+					temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+					sprintf(data,"LM35 Temperature = %f deg C",temp);
+					sendmsg(data);
 				} else {
 					//Give warning
 					sendmsg(msg5);
@@ -107,7 +113,7 @@ int main(void)
 				case 'A':
 				case 'a':
 				{
-				char data[50];
+				//char data[50];
 				sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
 				sendmsg(data);
 				break;
@@ -116,11 +122,11 @@ int main(void)
 				case 'V':
 				case 'v':
 				{
-				char data[50];
-				int adc_mV;
+				//char data[50];
 				adc_mV = (adc_reading/1000)*5000;
 				sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
 				sendmsg(data);
+				
 				break;
 				}
 				
@@ -137,8 +143,7 @@ int main(void)
 				case 'S':
 				case 's':
 				{
-				char data[50];
-				double OC;
+				//char data[50];
 				OC = OCR2A;
 				sprintf(data, "OCR2A = %f", OC);
 				sendmsg(data);
@@ -150,8 +155,47 @@ int main(void)
 		}
 		
 		if(new_adc_data) {
-			if(enContDisplay) {
-				//send new adc data to usart
+			while(enContDisplay) {
+				switch(on){
+					case pot:
+					adc_mV = (adc_reading/1000)*5000;
+					sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
+					sendmsg(data);
+					break;
+					
+					case lit:
+					if(adc_reading>512)
+					{
+						sendmsg(msg7);
+					}
+					else
+					{
+						sendmsg(msg8);
+					}
+					break;
+					
+					case temper:
+					temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+					sprintf(data,"LM35 Temperature = %f deg C",temp);
+					sendmsg(data);
+					break;
+					
+					case OCR:
+					OC = OCR2A;
+					sprintf(data, "OCR2A = %f", OC);
+					sendmsg(data);
+					break;
+					
+					case ADC_val:
+					sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
+					sendmsg(data);
+					break;
+					
+					default:
+					temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+					sprintf(data,"LM35 Temperature = %f deg C",temp);
+					sendmsg(data);
+				}
 			}
 			new_adc_data=0;
 		}
@@ -235,23 +279,28 @@ ISR(USART_TX_vect)
 ISR (ADC_vect)//handles ADC interrupts
 {
 	
-	adc_reading = ADC;
+	//adc_reading = ADC;
 	new_adc_data = 1;
 	switch(input) {
 		
 		case Volt :
 			ADMUX = (1<<7); //adc0
+			adc_reading = ADC;
 		break;
 		
 		case LDR :
 			ADMUX = (1<<7) | (1<<0); //adc1
+			adc_reading = ADC;
 		break;
 		
 		case Temp :
 			ADMUX = (1<<7) | (1<<1); //adc2
+			adc_reading = ADC;
 		break;
 		default:
 			ADMUX = (1<<7) | (1<<1); //adc2
+			adc_reading = ADC;
 	}
 	TIFR0 = TIFR0 & ~(1<<0); //clears Counter0 overflow
 }
+	
