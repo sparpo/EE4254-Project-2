@@ -15,20 +15,21 @@ void init_timer2(void);
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdio.h>
 
 
 /*message arrays*/
 char msg1[] = {"Unrecognized command"};
-char msg2[] = {"ADC set to read output of temperature sensor"};
-char msg3[] = {"ADC set to read output of LDR"};
-char msg4[] = {"ADC set to read output of potentiometer"};
-char msg5[] = {"Must set ADC to read output of temperature first by typing 'M' or 'm'"};
-char msg6[] = {"Must set ADC to read output of LDR first by typing 'N' or 'n'"};
+char msg2[] = {"ADC set for temperature sensor"};
+char msg3[] = {"ADC set for LDR"};
+char msg4[] = {"ADC set for potentiometer"};
+char msg5[] = {"Must set ADC for temperature by typing 'M' or 'm'"};
+char msg6[] = {"Must set ADC for LDR by typing 'N' or 'n'"};
 char msg7[] = {"LDR = Bright"};
 char msg8[] = {"LDR = Dark"};
 		
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
-unsigned char queue[150];       /*character queue*/
+unsigned char queue[50];       /*character queue*/
 unsigned int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
@@ -40,11 +41,11 @@ unsigned int enContDisplay = 0; //enable continuous display
 
 int main(void)
 {
-	//int adc_mV;
-	//double temp;
-	//double OC;
+	int adc_mV;
+	double temp;
+	double OC;
 	char ch;  /* character variable for received character*/
-	//char data[50];
+	char data[50];
 	init_ports();
 	init_USART();
 	init_adc();
@@ -83,10 +84,9 @@ int main(void)
 				case 'T':
 				case 't':
 					if (input == Temp) {
-						//char data[50];
-						//temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
-						//sprintf(data,"LM35 Temperature = %f deg C",temp);
-						//sendmsg(data);
+						temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+						sprintf(data,"LM35 Temperature = %f deg C",temp);
+						sendmsg(data);
 					} else {
 						//Give warning
 						sendmsg(msg5);
@@ -113,19 +113,17 @@ int main(void)
 				case 'A':
 				case 'a':
 				{
-					//char data[50];
-					//sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
-					//sendmsg(data);
+					sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
+					sendmsg(data);
 				break;
 				}
 				
 				case 'V':
 				case 'v':
 				{
-					//char data[50];
-					//adc_mV = (adc_reading/1000)*5000;
-					//sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
-					//sendmsg(data);
+					adc_mV = (adc_reading/1000)*5000;
+					sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
+					sendmsg(data);
 				
 				break;
 				}
@@ -143,10 +141,9 @@ int main(void)
 				case 'S':
 				case 's':
 				{
-					//char data[50];
-					//OC = OCR2A;
-					//sprintf(data, "OCR2A = %f", OC);
-					//sendmsg(data);
+					OC = OCR2A;
+					sprintf(data, "OCR2A = %f", OC);
+					sendmsg(data);
 				break;
 				}
 				default:
@@ -301,6 +298,6 @@ ISR (ADC_vect)//handles ADC interrupts
 			ADMUX = (1<<7) | (1<<1); //adc2
 			adc_reading = ADC;
 	}
-	TIFR0 = TIFR0 & ~(1<<0); //clears Counter0 overflow
+	TIFR0 = TIFR0 & (1<<0); //clears Counter0 overflow
 }
 	
