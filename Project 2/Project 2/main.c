@@ -45,7 +45,7 @@ int main(void)
 	double temp;
 	double OC;
 	char ch;  /* character variable for received character*/
-	char data[50];
+	char data[30];
 	init_ports();
 	init_USART();
 	init_adc();
@@ -270,7 +270,9 @@ ISR(USART_TX_vect)
 {
 	/*send next character and increment index*/
 	if (qcntr != sndcntr)
-	UDR0 = queue[sndcntr++];
+		UDR0 = queue[sndcntr++];
+	else
+		UCSR0B	= (1<<RXEN0) | (1<<TXEN0) ;  /* Turn off UDRIE0 */
 }
 
 ISR (ADC_vect)//handles ADC interrupts
@@ -278,26 +280,23 @@ ISR (ADC_vect)//handles ADC interrupts
 	
 	//adc_reading = ADC;
 	new_adc_data = 1;
+	adc_reading = ADC;
 	switch(input) {
 		
 		case Volt :
 			ADMUX = (1<<7); //adc0
-			adc_reading = ADC;
 		break;
 		
 		case LDR :
 			ADMUX = (1<<7) | (1<<0); //adc1
-			adc_reading = ADC;
 		break;
 		
 		case Temp :
 			ADMUX = (1<<7) | (1<<1); //adc2
-			adc_reading = ADC;
 		break;
 		default:
 			ADMUX = (1<<7) | (1<<1); //adc2
-			adc_reading = ADC;
 	}
-	TIFR0 = TIFR0 & (1<<0); //clears Counter0 overflow
+	TIFR0 = (1<<0); //clears Counter0 overflow
 }
 	
