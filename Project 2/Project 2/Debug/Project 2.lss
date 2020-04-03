@@ -7,7 +7,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         00000392  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          0000003c  00800224  00800224  0000054a  2**0
+  2 .bss          000000a0  00800224  00800224  0000054a  2**0
                   ALLOC
   3 .comment      00000030  00000000  00000000  0000054a  2**0
                   CONTENTS, READONLY
@@ -145,7 +145,7 @@ Disassembly of section .text:
   fe:	1d 92       	st	X+, r1
 
 00000100 <.do_clear_bss_start>:
- 100:	a0 36       	cpi	r26, 0x60	; 96
+ 100:	a4 3c       	cpi	r26, 0xC4	; 196
  102:	b2 07       	cpc	r27, r18
  104:	e1 f7       	brne	.-8      	; 0xfe <.do_clear_bss_loop>
  106:	0e 94 e3 00 	call	0x1c6	; 0x1c6 <main>
@@ -348,12 +348,12 @@ void sendmsg (char *s)
  1e8:	ee 24       	eor	r14, r14
  1ea:	e3 94       	inc	r14
  1ec:	f1 2c       	mov	r15, r1
-				sendmsg(msg2);
+					sendmsg(msg2);
 				break;
 				
 				case 'N':
 				case 'n':
-				input = LDR;
+					input = LDR;
  1ee:	cc 24       	eor	r12, r12
  1f0:	c3 94       	inc	r12
 			ch = UDR0;    /*get character sent from PC*/
@@ -361,7 +361,7 @@ void sendmsg (char *s)
 				
 				case 'M':
 				case 'm':
-				input = Temp;
+					input = Temp;
  1f2:	68 94       	set
  1f4:	dd 24       	eor	r13, r13
  1f6:	d1 f8       	bld	r13, 1
@@ -394,9 +394,9 @@ void sendmsg (char *s)
 				
 				case 'M':
 				case 'm':
-				input = Temp;
- 21c:	d0 92 5b 02 	sts	0x025B, r13	; 0x80025b <input>
-				sendmsg(msg2);
+					input = Temp;
+ 21c:	d0 92 bf 02 	sts	0x02BF, r13	; 0x8002bf <input>
+					sendmsg(msg2);
  220:	82 ee       	ldi	r24, 0xE2	; 226
  222:	91 e0       	ldi	r25, 0x01	; 1
  224:	0e 94 bf 00 	call	0x17e	; 0x17e <sendmsg>
@@ -405,9 +405,9 @@ void sendmsg (char *s)
 				
 				case 'N':
 				case 'n':
-				input = LDR;
- 22a:	c0 92 5b 02 	sts	0x025B, r12	; 0x80025b <input>
-				sendmsg(msg3);
+					input = LDR;
+ 22a:	c0 92 bf 02 	sts	0x02BF, r12	; 0x8002bf <input>
+					sendmsg(msg3);
  22e:	84 ec       	ldi	r24, 0xC4	; 196
  230:	91 e0       	ldi	r25, 0x01	; 1
  232:	0e 94 bf 00 	call	0x17e	; 0x17e <sendmsg>
@@ -416,9 +416,9 @@ void sendmsg (char *s)
 				
 				case 'P':
 				case 'p':
-				input = Volt;
- 238:	10 92 5b 02 	sts	0x025B, r1	; 0x80025b <input>
-				sendmsg(msg4);
+					input = Volt;
+ 238:	10 92 bf 02 	sts	0x02BF, r1	; 0x8002bf <input>
+					sendmsg(msg4);
  23c:	8c e9       	ldi	r24, 0x9C	; 156
  23e:	91 e0       	ldi	r25, 0x01	; 1
  240:	0e 94 bf 00 	call	0x17e	; 0x17e <sendmsg>
@@ -427,53 +427,53 @@ void sendmsg (char *s)
 				
 				case 'T':
 				case 't':
-				if (input == Temp) {
- 246:	80 91 5b 02 	lds	r24, 0x025B	; 0x80025b <input>
+					if (input == Temp) {
+ 246:	80 91 bf 02 	lds	r24, 0x02BF	; 0x8002bf <input>
  24a:	82 30       	cpi	r24, 0x02	; 2
  24c:	a9 f2       	breq	.-86     	; 0x1f8 <main+0x32>
-					//temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
-					//sprintf(data,"LM35 Temperature = %f deg C",temp);
-					//sendmsg(data);
-				} else {
-					//Give warning
-					sendmsg(msg5);
+						//temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+						//sprintf(data,"LM35 Temperature = %f deg C",temp);
+						//sendmsg(data);
+					} else {
+						//Give warning
+						sendmsg(msg5);
  24e:	86 e5       	ldi	r24, 0x56	; 86
  250:	91 e0       	ldi	r25, 0x01	; 1
  252:	0e 94 bf 00 	call	0x17e	; 0x17e <sendmsg>
  256:	d0 cf       	rjmp	.-96     	; 0x1f8 <main+0x32>
-				}
+					}
 				break;
 				
 				case 'L':
 				case 'l':
-				if (input == LDR) {
- 258:	80 91 5b 02 	lds	r24, 0x025B	; 0x80025b <input>
+					if (input == LDR) {
+ 258:	80 91 bf 02 	lds	r24, 0x02BF	; 0x8002bf <input>
  25c:	81 30       	cpi	r24, 0x01	; 1
  25e:	89 f4       	brne	.+34     	; 0x282 <main+0xbc>
-						if(adc_reading>512)
- 260:	80 91 5c 02 	lds	r24, 0x025C	; 0x80025c <adc_reading>
- 264:	90 91 5d 02 	lds	r25, 0x025D	; 0x80025d <adc_reading+0x1>
+							if(adc_reading>512)
+ 260:	80 91 c0 02 	lds	r24, 0x02C0	; 0x8002c0 <adc_reading>
+ 264:	90 91 c1 02 	lds	r25, 0x02C1	; 0x8002c1 <adc_reading+0x1>
  268:	81 30       	cpi	r24, 0x01	; 1
  26a:	92 40       	sbci	r25, 0x02	; 2
  26c:	28 f0       	brcs	.+10     	; 0x278 <main+0xb2>
-						{
-							sendmsg(msg7);
+							{
+								sendmsg(msg7);
  26e:	8b e0       	ldi	r24, 0x0B	; 11
  270:	91 e0       	ldi	r25, 0x01	; 1
  272:	0e 94 bf 00 	call	0x17e	; 0x17e <sendmsg>
  276:	c0 cf       	rjmp	.-128    	; 0x1f8 <main+0x32>
-						}
-						else
-						{
-							sendmsg(msg8);
+							}
+							else
+							{
+								sendmsg(msg8);
  278:	80 e0       	ldi	r24, 0x00	; 0
  27a:	91 e0       	ldi	r25, 0x01	; 1
  27c:	0e 94 bf 00 	call	0x17e	; 0x17e <sendmsg>
  280:	bb cf       	rjmp	.-138    	; 0x1f8 <main+0x32>
-						}
+							}
 					} else {
-					//Give warning
-					sendmsg(msg6);
+						//Give warning
+						sendmsg(msg6);
  282:	88 e1       	ldi	r24, 0x18	; 24
  284:	91 e0       	ldi	r25, 0x01	; 1
  286:	0e 94 bf 00 	call	0x17e	; 0x17e <sendmsg>
@@ -496,8 +496,8 @@ void sendmsg (char *s)
  29a:	10 92 24 02 	sts	0x0224, r1	; 0x800224 <__data_end>
 				break;
  29e:	ac cf       	rjmp	.-168    	; 0x1f8 <main+0x32>
-				//sprintf(data, "OCR2A = %f", OC);
-				//sendmsg(data);
+					//sprintf(data, "OCR2A = %f", OC);
+					//sendmsg(data);
 				break;
 				}
 				default:
@@ -563,10 +563,10 @@ ISR (ADC_vect)//handles ADC interrupts
 	new_adc_data = 1;
  2f8:	81 e0       	ldi	r24, 0x01	; 1
  2fa:	90 e0       	ldi	r25, 0x00	; 0
- 2fc:	90 93 5f 02 	sts	0x025F, r25	; 0x80025f <new_adc_data+0x1>
- 300:	80 93 5e 02 	sts	0x025E, r24	; 0x80025e <new_adc_data>
+ 2fc:	90 93 c3 02 	sts	0x02C3, r25	; 0x8002c3 <new_adc_data+0x1>
+ 300:	80 93 c2 02 	sts	0x02C2, r24	; 0x8002c2 <new_adc_data>
 	switch(input) {
- 304:	80 91 5b 02 	lds	r24, 0x025B	; 0x80025b <input>
+ 304:	80 91 bf 02 	lds	r24, 0x02BF	; 0x8002bf <input>
  308:	81 30       	cpi	r24, 0x01	; 1
  30a:	81 f0       	breq	.+32     	; 0x32c <__vector_21+0x42>
  30c:	18 f0       	brcs	.+6      	; 0x314 <__vector_21+0x2a>
@@ -581,8 +581,8 @@ ISR (ADC_vect)//handles ADC interrupts
 			adc_reading = ADC;
  31a:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__DATA_REGION_ORIGIN__+0x18>
  31e:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__DATA_REGION_ORIGIN__+0x19>
- 322:	90 93 5d 02 	sts	0x025D, r25	; 0x80025d <adc_reading+0x1>
- 326:	80 93 5c 02 	sts	0x025C, r24	; 0x80025c <adc_reading>
+ 322:	90 93 c1 02 	sts	0x02C1, r25	; 0x8002c1 <adc_reading+0x1>
+ 326:	80 93 c0 02 	sts	0x02C0, r24	; 0x8002c0 <adc_reading>
 		break;
  32a:	23 c0       	rjmp	.+70     	; 0x372 <__vector_21+0x88>
 		
@@ -593,8 +593,8 @@ ISR (ADC_vect)//handles ADC interrupts
 			adc_reading = ADC;
  332:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__DATA_REGION_ORIGIN__+0x18>
  336:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__DATA_REGION_ORIGIN__+0x19>
- 33a:	90 93 5d 02 	sts	0x025D, r25	; 0x80025d <adc_reading+0x1>
- 33e:	80 93 5c 02 	sts	0x025C, r24	; 0x80025c <adc_reading>
+ 33a:	90 93 c1 02 	sts	0x02C1, r25	; 0x8002c1 <adc_reading+0x1>
+ 33e:	80 93 c0 02 	sts	0x02C0, r24	; 0x8002c0 <adc_reading>
 		break;
  342:	17 c0       	rjmp	.+46     	; 0x372 <__vector_21+0x88>
 		
@@ -605,8 +605,8 @@ ISR (ADC_vect)//handles ADC interrupts
 			adc_reading = ADC;
  34a:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__DATA_REGION_ORIGIN__+0x18>
  34e:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__DATA_REGION_ORIGIN__+0x19>
- 352:	90 93 5d 02 	sts	0x025D, r25	; 0x80025d <adc_reading+0x1>
- 356:	80 93 5c 02 	sts	0x025C, r24	; 0x80025c <adc_reading>
+ 352:	90 93 c1 02 	sts	0x02C1, r25	; 0x8002c1 <adc_reading+0x1>
+ 356:	80 93 c0 02 	sts	0x02C0, r24	; 0x8002c0 <adc_reading>
 		break;
  35a:	0b c0       	rjmp	.+22     	; 0x372 <__vector_21+0x88>
 		default:
@@ -616,8 +616,8 @@ ISR (ADC_vect)//handles ADC interrupts
 			adc_reading = ADC;
  362:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__DATA_REGION_ORIGIN__+0x18>
  366:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__DATA_REGION_ORIGIN__+0x19>
- 36a:	90 93 5d 02 	sts	0x025D, r25	; 0x80025d <adc_reading+0x1>
- 36e:	80 93 5c 02 	sts	0x025C, r24	; 0x80025c <adc_reading>
+ 36a:	90 93 c1 02 	sts	0x02C1, r25	; 0x8002c1 <adc_reading+0x1>
+ 36e:	80 93 c0 02 	sts	0x02C0, r24	; 0x8002c0 <adc_reading>
 	}
 	TIFR0 = TIFR0 & ~(1<<0); //clears Counter0 overflow
  372:	a8 98       	cbi	0x15, 0	; 21

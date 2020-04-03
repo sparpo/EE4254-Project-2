@@ -28,7 +28,7 @@ char msg7[] = {"LDR = Bright"};
 char msg8[] = {"LDR = Dark"};
 		
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
-unsigned char queue[50];       /*character queue*/
+unsigned char queue[150];       /*character queue*/
 unsigned int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
@@ -64,68 +64,68 @@ int main(void)
 				
 				case 'M':
 				case 'm':
-				input = Temp;
-				sendmsg(msg2);
+					input = Temp;
+					sendmsg(msg2);
 				break;
 				
 				case 'N':
 				case 'n':
-				input = LDR;
-				sendmsg(msg3);
+					input = LDR;
+					sendmsg(msg3);
 				break;
 				
 				case 'P':
 				case 'p':
-				input = Volt;
-				sendmsg(msg4);
+					input = Volt;
+					sendmsg(msg4);
 				break;
 				
 				case 'T':
 				case 't':
-				if (input == Temp) {
-					//char data[50];
-					//temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
-					//sprintf(data,"LM35 Temperature = %f deg C",temp);
-					//sendmsg(data);
-				} else {
-					//Give warning
-					sendmsg(msg5);
-				}
+					if (input == Temp) {
+						//char data[50];
+						//temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+						//sprintf(data,"LM35 Temperature = %f deg C",temp);
+						//sendmsg(data);
+					} else {
+						//Give warning
+						sendmsg(msg5);
+					}
 				break;
 				
 				case 'L':
 				case 'l':
-				if (input == LDR) {
-						if(adc_reading>512)
-						{
-							sendmsg(msg7);
-						}
-						else
-						{
-							sendmsg(msg8);
-						}
+					if (input == LDR) {
+							if(adc_reading>512)
+							{
+								sendmsg(msg7);
+							}
+							else
+							{
+								sendmsg(msg8);
+							}
 					} else {
-					//Give warning
-					sendmsg(msg6);
-				}
+						//Give warning
+						sendmsg(msg6);
+					}
 				break;
 				
 				case 'A':
 				case 'a':
 				{
-				//char data[50];
-				//sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
-				//sendmsg(data);
+					//char data[50];
+					//sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
+					//sendmsg(data);
 				break;
 				}
 				
 				case 'V':
 				case 'v':
 				{
-				//char data[50];
-				//adc_mV = (adc_reading/1000)*5000;
-				//sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
-				//sendmsg(data);
+					//char data[50];
+					//adc_mV = (adc_reading/1000)*5000;
+					//sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
+					//sendmsg(data);
 				
 				break;
 				}
@@ -143,10 +143,10 @@ int main(void)
 				case 'S':
 				case 's':
 				{
-				//char data[50];
-				//OC = OCR2A;
-				//sprintf(data, "OCR2A = %f", OC);
-				//sendmsg(data);
+					//char data[50];
+					//OC = OCR2A;
+					//sprintf(data, "OCR2A = %f", OC);
+					//sendmsg(data);
 				break;
 				}
 				default:
@@ -158,43 +158,43 @@ int main(void)
 			while(enContDisplay) {
 				switch(on){
 					case pot:
-					adc_mV = (adc_reading/1000)*5000;
-					sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
-					sendmsg(data);
+						adc_mV = (adc_reading/1000)*5000;
+						sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
+						sendmsg(data);
 					break;
 					
 					case lit:
-					if(adc_reading>512)
-					{
-						sendmsg(msg7);
-					}
-					else
-					{
-						sendmsg(msg8);
-					}
+						if(adc_reading>512)
+						{
+							sendmsg(msg7);
+						}
+						else
+						{
+							sendmsg(msg8);
+						}
 					break;
 					
 					case temper:
-					temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
-					sprintf(data,"LM35 Temperature = %f deg C",temp);
-					sendmsg(data);
+						temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+						sprintf(data,"LM35 Temperature = %f deg C",temp);
+						sendmsg(data);
 					break;
 					
 					case OCR:
-					OC = OCR2A;
-					sprintf(data, "OCR2A = %f", OC);
-					sendmsg(data);
+						OC = OCR2A;
+						sprintf(data, "OCR2A = %f", OC);
+						sendmsg(data);
 					break;
 					
 					case ADC_val:
-					sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
-					sendmsg(data);
+						sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
+						sendmsg(data);
 					break;
 					
 					default:
-					temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
-					sprintf(data,"LM35 Temperature = %f deg C",temp);
-					sendmsg(data);
+						temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+						sprintf(data,"LM35 Temperature = %f deg C",temp);
+						sendmsg(data);
 				}
 			}
 			new_adc_data=0;
