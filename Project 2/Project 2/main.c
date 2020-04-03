@@ -40,11 +40,11 @@ unsigned int enContDisplay = 0; //enable continuous display
 
 int main(void)
 {
-	int adc_mV;
-	double temp;
-	double OC;
+	//int adc_mV;
+	//double temp;
+	//double OC;
 	char ch;  /* character variable for received character*/
-	char data[50];
+	//char data[50];
 	init_ports();
 	init_USART();
 	init_adc();
@@ -84,9 +84,9 @@ int main(void)
 				case 't':
 				if (input == Temp) {
 					//char data[50];
-					temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
-					sprintf(data,"LM35 Temperature = %f deg C",temp);
-					sendmsg(data);
+					//temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+					//sprintf(data,"LM35 Temperature = %f deg C",temp);
+					//sendmsg(data);
 				} else {
 					//Give warning
 					sendmsg(msg5);
@@ -114,8 +114,8 @@ int main(void)
 				case 'a':
 				{
 				//char data[50];
-				sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
-				sendmsg(data);
+				//sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
+				//sendmsg(data);
 				break;
 				}
 				
@@ -123,9 +123,9 @@ int main(void)
 				case 'v':
 				{
 				//char data[50];
-				adc_mV = (adc_reading/1000)*5000;
-				sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
-				sendmsg(data);
+				//adc_mV = (adc_reading/1000)*5000;
+				//sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
+				//sendmsg(data);
 				
 				break;
 				}
@@ -144,16 +144,16 @@ int main(void)
 				case 's':
 				{
 				//char data[50];
-				OC = OCR2A;
-				sprintf(data, "OCR2A = %f", OC);
-				sendmsg(data);
+				//OC = OCR2A;
+				//sprintf(data, "OCR2A = %f", OC);
+				//sendmsg(data);
 				break;
 				}
 				default:
 				sendmsg(msg1); /*send default message*/
 			}
 		}
-		
+	/*	
 		if(new_adc_data) {
 			while(enContDisplay) {
 				switch(on){
@@ -198,7 +198,7 @@ int main(void)
 				}
 			}
 			new_adc_data=0;
-		}
+		}*/
 	}
 	return 1;
 }
