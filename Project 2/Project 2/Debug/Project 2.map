@@ -50,7 +50,7 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
 Allocating common symbols
 Common symbol       size              file
 
-queue               0x32              main.o
+queue               0x64              main.o
 on                  0x1               main.o
 input               0x1               main.o
 adc_reading         0x2               main.o
@@ -578,7 +578,7 @@ END GROUP
                 0x0080021a                _edata = .
                 0x0080021a                PROVIDE (__data_end, .)
 
-.bss            0x0080021a       0x3c
+.bss            0x0080021a       0x6e
                 0x0080021a                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
@@ -590,21 +590,21 @@ END GROUP
  .bss.qcntr     0x0080021d        0x1 main.o
                 0x0080021d                qcntr
  *(COMMON)
- COMMON         0x0080021e       0x38 main.o
+ COMMON         0x0080021e       0x6a main.o
                 0x0080021e                queue
-                0x00800250                on
-                0x00800251                input
-                0x00800252                adc_reading
-                0x00800254                new_adc_data
-                0x00800256                PROVIDE (__bss_end, .)
+                0x00800282                on
+                0x00800283                input
+                0x00800284                adc_reading
+                0x00800286                new_adc_data
+                0x00800288                PROVIDE (__bss_end, .)
                 0x00000ca2                __data_load_start = LOADADDR (.data)
                 0x00000dbc                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800256        0x0
+.noinit         0x00800288        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800256                _end = .
+                0x00800288                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0

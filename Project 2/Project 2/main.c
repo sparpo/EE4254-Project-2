@@ -29,7 +29,7 @@ char msg7[] = {"LDR = Bright"};
 char msg8[] = {"LDR = Dark"};
 		
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
-unsigned char queue[50];       /*character queue*/
+unsigned char queue[100];       /*character queue*/
 unsigned int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
@@ -198,6 +198,7 @@ int main(void)
 		}*/
 	}
 	return 1;
+	
 }
 void init_adc() {
 	ADMUX = (1<<6)|(1<<1); //sets voltage ref to Vcc and starts ADC2
@@ -216,9 +217,8 @@ void init_USART() {
 	
 	UCSR0A	= (1<<RXC0) | (1<<TXC0); // enable RX and TX
 	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXC0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
-	UBRR0	= 103;  /*baud rate = 9600*/
-	UCSR0C = (0b00000110); //setting data to 8 bits
-	
+	UBRR0	= 103;  //baud rate = 9600
+	UCSR0C = (0b00000110); //setting data to 8 bits 
 }
 
 void init_timer0() {

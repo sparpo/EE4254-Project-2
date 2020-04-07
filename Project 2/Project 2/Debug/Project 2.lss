@@ -7,7 +7,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         00000ca2  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          0000003c  0080021a  0080021a  00000e50  2**0
+  2 .bss          0000006e  0080021a  0080021a  00000e50  2**0
                   ALLOC
   3 .comment      0000005c  00000000  00000000  00000e50  2**0
                   CONTENTS, READONLY
@@ -145,7 +145,7 @@ Disassembly of section .text:
   fe:	1d 92       	st	X+, r1
 
 00000100 <.do_clear_bss_start>:
- 100:	a6 35       	cpi	r26, 0x56	; 86
+ 100:	a8 38       	cpi	r26, 0x88	; 136
  102:	b2 07       	cpc	r27, r18
  104:	e1 f7       	brne	.-8      	; 0xfe <.do_clear_bss_loop>
  106:	0e 94 e3 00 	call	0x1c6	; 0x1c6 <main>
@@ -155,9 +155,9 @@ Disassembly of section .text:
  10e:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 00000112 <init_adc>:
-		}*/
 	}
 	return 1;
+	
 }
 void init_adc() {
 	ADMUX = (1<<6)|(1<<1); //sets voltage ref to Vcc and starts ADC2
@@ -195,18 +195,17 @@ void init_USART() {
 	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXC0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
  134:	88 e5       	ldi	r24, 0x58	; 88
  136:	80 93 c1 00 	sts	0x00C1, r24	; 0x8000c1 <__DATA_REGION_ORIGIN__+0x61>
-	UBRR0	= 103;  /*baud rate = 9600*/
+	UBRR0	= 103;  //baud rate = 9600
  13a:	87 e6       	ldi	r24, 0x67	; 103
  13c:	90 e0       	ldi	r25, 0x00	; 0
  13e:	90 93 c5 00 	sts	0x00C5, r25	; 0x8000c5 <__DATA_REGION_ORIGIN__+0x65>
  142:	80 93 c4 00 	sts	0x00C4, r24	; 0x8000c4 <__DATA_REGION_ORIGIN__+0x64>
-	UCSR0C = (0b00000110); //setting data to 8 bits
+	UCSR0C = (0b00000110); //setting data to 8 bits 
  146:	86 e0       	ldi	r24, 0x06	; 6
  148:	80 93 c2 00 	sts	0x00C2, r24	; 0x8000c2 <__DATA_REGION_ORIGIN__+0x62>
  14c:	08 95       	ret
 
 0000014e <init_timer0>:
-	
 }
 
 void init_timer0() {
@@ -444,7 +443,7 @@ int main(void)
 				case 'm':
 					input = Temp;
  264:	b2 e0       	ldi	r27, 0x02	; 2
- 266:	b0 93 51 02 	sts	0x0251, r27	; 0x800251 <input>
+ 266:	b0 93 83 02 	sts	0x0283, r27	; 0x800283 <input>
 					sendmsg(msg2);
  26a:	8e e9       	ldi	r24, 0x9E	; 158
  26c:	91 e0       	ldi	r25, 0x01	; 1
@@ -456,7 +455,7 @@ int main(void)
 				case 'n':
 					input = LDR;
  274:	e1 e0       	ldi	r30, 0x01	; 1
- 276:	e0 93 51 02 	sts	0x0251, r30	; 0x800251 <input>
+ 276:	e0 93 83 02 	sts	0x0283, r30	; 0x800283 <input>
 					sendmsg(msg3);
  27a:	8e e8       	ldi	r24, 0x8E	; 142
  27c:	91 e0       	ldi	r25, 0x01	; 1
@@ -467,7 +466,7 @@ int main(void)
 				case 'P':
 				case 'p':
 					input = Volt;
- 284:	10 92 51 02 	sts	0x0251, r1	; 0x800251 <input>
+ 284:	10 92 83 02 	sts	0x0283, r1	; 0x800283 <input>
 					sendmsg(msg4);
  288:	84 e7       	ldi	r24, 0x74	; 116
  28a:	91 e0       	ldi	r25, 0x01	; 1
@@ -478,13 +477,13 @@ int main(void)
 				case 'T':
 				case 't':
 					if (input == Temp) {
- 292:	80 91 51 02 	lds	r24, 0x0251	; 0x800251 <input>
+ 292:	80 91 83 02 	lds	r24, 0x0283	; 0x800283 <input>
  296:	82 30       	cpi	r24, 0x02	; 2
  298:	19 f5       	brne	.+70     	; 0x2e0 <main+0x11a>
 						temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
 						sprintf(data,"LM35 Temperature = %f deg C",temp);
- 29a:	60 91 52 02 	lds	r22, 0x0252	; 0x800252 <adc_reading>
- 29e:	70 91 53 02 	lds	r23, 0x0253	; 0x800253 <adc_reading+0x1>
+ 29a:	60 91 84 02 	lds	r22, 0x0284	; 0x800284 <adc_reading>
+ 29e:	70 91 85 02 	lds	r23, 0x0285	; 0x800285 <adc_reading+0x1>
  2a2:	80 e0       	ldi	r24, 0x00	; 0
  2a4:	90 e0       	ldi	r25, 0x00	; 0
  2a6:	0e 94 55 02 	call	0x4aa	; 0x4aa <__floatunsisf>
@@ -526,12 +525,12 @@ int main(void)
 				case 'L':
 				case 'l':
 					if (input == LDR) {
- 2ea:	80 91 51 02 	lds	r24, 0x0251	; 0x800251 <input>
+ 2ea:	80 91 83 02 	lds	r24, 0x0283	; 0x800283 <input>
  2ee:	81 30       	cpi	r24, 0x01	; 1
  2f0:	89 f4       	brne	.+34     	; 0x314 <main+0x14e>
 							if(adc_reading>512)
- 2f2:	80 91 52 02 	lds	r24, 0x0252	; 0x800252 <adc_reading>
- 2f6:	90 91 53 02 	lds	r25, 0x0253	; 0x800253 <adc_reading+0x1>
+ 2f2:	80 91 84 02 	lds	r24, 0x0284	; 0x800284 <adc_reading>
+ 2f6:	90 91 85 02 	lds	r25, 0x0285	; 0x800285 <adc_reading+0x1>
  2fa:	81 30       	cpi	r24, 0x01	; 1
  2fc:	92 40       	sbci	r25, 0x02	; 2
  2fe:	28 f0       	brcs	.+10     	; 0x30a <main+0x144>
@@ -563,9 +562,9 @@ int main(void)
 				case 'a':
 				{
 					sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
- 31e:	80 91 53 02 	lds	r24, 0x0253	; 0x800253 <adc_reading+0x1>
+ 31e:	80 91 85 02 	lds	r24, 0x0285	; 0x800285 <adc_reading+0x1>
  322:	8f 93       	push	r24
- 324:	80 91 52 02 	lds	r24, 0x0252	; 0x800252 <adc_reading>
+ 324:	80 91 84 02 	lds	r24, 0x0284	; 0x800284 <adc_reading>
  328:	8f 93       	push	r24
  32a:	3f 92       	push	r3
  32c:	2f 92       	push	r2
@@ -589,8 +588,8 @@ int main(void)
 				{
 					adc_mV = (adc_reading/1000)*5000;
 					sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
- 34a:	20 91 52 02 	lds	r18, 0x0252	; 0x800252 <adc_reading>
- 34e:	30 91 53 02 	lds	r19, 0x0253	; 0x800253 <adc_reading+0x1>
+ 34a:	20 91 84 02 	lds	r18, 0x0284	; 0x800284 <adc_reading>
+ 34e:	30 91 85 02 	lds	r19, 0x0285	; 0x800285 <adc_reading+0x1>
  352:	36 95       	lsr	r19
  354:	27 95       	ror	r18
  356:	36 95       	lsr	r19
@@ -750,15 +749,15 @@ ISR (ADC_vect)//handles ADC interrupts
 	new_adc_data = 1;
  44e:	81 e0       	ldi	r24, 0x01	; 1
  450:	90 e0       	ldi	r25, 0x00	; 0
- 452:	90 93 55 02 	sts	0x0255, r25	; 0x800255 <new_adc_data+0x1>
- 456:	80 93 54 02 	sts	0x0254, r24	; 0x800254 <new_adc_data>
+ 452:	90 93 87 02 	sts	0x0287, r25	; 0x800287 <new_adc_data+0x1>
+ 456:	80 93 86 02 	sts	0x0286, r24	; 0x800286 <new_adc_data>
 	adc_reading = ADC;
  45a:	80 91 78 00 	lds	r24, 0x0078	; 0x800078 <__DATA_REGION_ORIGIN__+0x18>
  45e:	90 91 79 00 	lds	r25, 0x0079	; 0x800079 <__DATA_REGION_ORIGIN__+0x19>
- 462:	90 93 53 02 	sts	0x0253, r25	; 0x800253 <adc_reading+0x1>
- 466:	80 93 52 02 	sts	0x0252, r24	; 0x800252 <adc_reading>
+ 462:	90 93 85 02 	sts	0x0285, r25	; 0x800285 <adc_reading+0x1>
+ 466:	80 93 84 02 	sts	0x0284, r24	; 0x800284 <adc_reading>
 	switch(input) {
- 46a:	80 91 51 02 	lds	r24, 0x0251	; 0x800251 <input>
+ 46a:	80 91 83 02 	lds	r24, 0x0283	; 0x800283 <input>
  46e:	81 30       	cpi	r24, 0x01	; 1
  470:	41 f0       	breq	.+16     	; 0x482 <__vector_21+0x42>
  472:	18 f0       	brcs	.+6      	; 0x47a <__vector_21+0x3a>
