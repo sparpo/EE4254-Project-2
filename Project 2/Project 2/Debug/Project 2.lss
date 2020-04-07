@@ -766,30 +766,30 @@ ISR (ADC_vect)//handles ADC interrupts
  478:	0c c0       	rjmp	.+24     	; 0x492 <__vector_21+0x52>
 		
 		case Volt :
-			ADMUX = (1<<7); //adc0
- 47a:	80 e8       	ldi	r24, 0x80	; 128
+			ADMUX = (1<<6) | (0<<0); //adc0
+ 47a:	80 e4       	ldi	r24, 0x40	; 64
  47c:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
 		break;
  480:	0b c0       	rjmp	.+22     	; 0x498 <__vector_21+0x58>
 		
 		case LDR :
-			ADMUX = (1<<7) | (1<<0); //adc1
- 482:	81 e8       	ldi	r24, 0x81	; 129
+			ADMUX = (1<<6) | (1<<0); //adc1
+ 482:	81 e4       	ldi	r24, 0x41	; 65
  484:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
 		break;
  488:	07 c0       	rjmp	.+14     	; 0x498 <__vector_21+0x58>
 		
 		case Temp :
-			ADMUX = (1<<7) | (1<<1); //adc2
- 48a:	82 e8       	ldi	r24, 0x82	; 130
+			ADMUX = (1<<6) | (1<<1) ; //adc2
+ 48a:	82 e4       	ldi	r24, 0x42	; 66
  48c:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
 		break;
  490:	03 c0       	rjmp	.+6      	; 0x498 <__vector_21+0x58>
 		default:
-			ADMUX = (1<<7) | (1<<1); //adc2
- 492:	82 e8       	ldi	r24, 0x82	; 130
+			ADMUX = (1<<6) | (1<<1); //adc2
+ 492:	82 e4       	ldi	r24, 0x42	; 66
  494:	80 93 7c 00 	sts	0x007C, r24	; 0x80007c <__DATA_REGION_ORIGIN__+0x1c>
-	}
+	} 
 	TIFR0 = (1<<0); //clears Counter0 overflow
  498:	81 e0       	ldi	r24, 0x01	; 1
  49a:	85 bb       	out	0x15, r24	; 21

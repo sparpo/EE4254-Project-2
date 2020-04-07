@@ -284,19 +284,19 @@ ISR (ADC_vect)//handles ADC interrupts
 	switch(input) {
 		
 		case Volt :
-			ADMUX = (1<<7); //adc0
+			ADMUX = (1<<6) | (0<<0); //adc0
 		break;
 		
 		case LDR :
-			ADMUX = (1<<7) | (1<<0); //adc1
+			ADMUX = (1<<6) | (1<<0); //adc1
 		break;
 		
 		case Temp :
-			ADMUX = (1<<7) | (1<<1); //adc2
+			ADMUX = (1<<6) | (1<<1) ; //adc2
 		break;
 		default:
-			ADMUX = (1<<7) | (1<<1); //adc2
-	}
+			ADMUX = (1<<6) | (1<<1); //adc2
+	} 
 	TIFR0 = (1<<0); //clears Counter0 overflow
 }
 	
