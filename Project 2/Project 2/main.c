@@ -174,11 +174,11 @@ int main(void)
 				
 				/* Sets LED Brightness Level */
 				case '0' ... '9':
-					//Brightness = atoi(ch);
+					
 					Brightness = ch - '0';
 					OCR2A = Brightness * 25.5;
-					sprintf(data, "%d",Brightness);
-					sendmsg(data);
+					//sprintf(data, "%d",Brightness);
+					//sendmsg(data);
 				break;
 				
 				default:
