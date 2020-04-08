@@ -90,7 +90,6 @@ int main(void)
 				case 'N':
 				case 'n':
 					input = LDR;
-
 					sendmsg(msg3);
 				break;
 				
@@ -195,7 +194,7 @@ int main(void)
 					break;
 					
 					case LDR:
-						if(adc_reading>512)
+						if(adc_reading>Light_Threshold)
 						{
 							sendmsg(msg7);
 						}
@@ -206,15 +205,16 @@ int main(void)
 					break;
 					
 					case Temp:
-						temp = (1.0*adc_reading)/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
-						dtostrf(temp,4,2,str_temp);
-						sprintf(data,"LM35 Temperature = %s deg C",str_temp);
+						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
+						dtostrf(temp,4,2,str_temp); // Changes value from double to string
+						sprintf(data,"LM35 Temperature = %s deg C",str_temp); //Report Temperature value
 						sendmsg(data);
 					break;
 					
 					default:
-						temp = (adc_reading)/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
-						sprintf(data,"LM35 Temperature = %f deg C",temp);
+						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
+						dtostrf(temp,4,2,str_temp); // Changes value from double to string
+						sprintf(data,"LM35 Temperature = %s deg C",str_temp); //Report Temperature value
 						sendmsg(data);
 				}
 			}
