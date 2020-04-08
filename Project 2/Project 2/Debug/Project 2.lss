@@ -299,7 +299,7 @@ Disassembly of section .text:
      22a:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 0000022e <init_adc>:
-
+/* Initializing Timer1 registers */
 void init_timer1() {
 	
 	TCCR1A = 0;
@@ -338,9 +338,9 @@ void init_timer1() {
      26c:	08 95       	ret
 
 0000026e <init_timer2>:
-
 }
 
+/* Initializing Timer2 registers */
 void init_timer2() {
 	
 	TCCR2A = (1<<7)|(1<<0); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode
@@ -354,8 +354,8 @@ void init_timer2() {
      27e:	08 95       	ret
 
 00000280 <sendmsg>:
-}
 
+/* sendmsg function*/
 void sendmsg (char *s)
 {
 	qcntr = 0;    /*preset indices*/
@@ -406,10 +406,10 @@ void sendmsg (char *s)
      2c6:	08 95       	ret
 
 000002c8 <main>:
-enum active{pot,lit,temper} on; // potentiometer measuring active,LDR measuring active,LM35 sensor active, OC2RA, ADC value
-
 unsigned int enContDisplay = 0; //enable continuous display
 
+
+/* Main */
 int main(void)
 {
      2c8:	cf 93       	push	r28
@@ -422,23 +422,22 @@ int main(void)
      2d6:	de bf       	out	0x3e, r29	; 62
      2d8:	0f be       	out	0x3f, r0	; 63
      2da:	cd bf       	out	0x3d, r28	; 61
-	char str_OC[6];
-	char str_adv_mV[6];
 	double mV_multiplier =4.88; // 0.00488 * 1000
 	int temp_divider = 2; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
-	int Brightness;
-	init_ports();
+	int Brightness; // variable that user will enter to set brightness of LED
+	
+	/* Calling Initialized Registers */
+	init_ports(); // initializes ports
      2dc:	0e 94 21 01 	call	0x242	; 0x242 <init_ports>
-	init_USART();
+	init_USART(); // initializes USART
      2e0:	0e 94 25 01 	call	0x24a	; 0x24a <init_USART>
-	init_adc();
+	init_adc(); // initializes adc
      2e4:	0e 94 17 01 	call	0x22e	; 0x22e <init_adc>
-	init_timer0();
+	init_timer0(); // initializes timer0
      2e8:	0e 94 2f 01 	call	0x25e	; 0x25e <init_timer0>
-	//init_timer1();
-	init_timer2();
+	//init_timer1(); // initializes timer1
+	init_timer2(); // initializes timer2
      2ec:	0e 94 37 01 	call	0x26e	; 0x26e <init_timer2>
-
 
 	sei(); /*global interrupt enable */
      2f0:	78 94       	sei
@@ -458,8 +457,8 @@ int main(void)
      300:	cf 2e       	mov	r12, r31
      302:	d1 2c       	mov	r13, r1
      304:	f0 2d       	mov	r31, r0
-				break;
 				
+				/* Sets LED Brightness Level */
 				case '0' ... '9':
 					//Brightness = atoi(ch);
 					Brightness = ch - '0';
@@ -480,9 +479,9 @@ int main(void)
      31e:	01 96       	adiw	r24, 0x01	; 1
      320:	5c 01       	movw	r10, r24
 				
+				/* Report OCR2A Value */
 				case 'S':
 				case 's':
-				
 					OC = OCR2A;
 					dtostrf(OC,4,2,str_OC);
      322:	3e 01       	movw	r6, r28
@@ -490,21 +489,21 @@ int main(void)
      326:	69 0e       	add	r6, r25
      328:	71 1c       	adc	r7, r1
 				
+				/* Report ADC Value in mV to user */
 				case 'V':
 				case 'v':
-				
-					adc_mV = (adc_reading*mV_multiplier);
-					dtostrf(adc_mV,6,2,str_adv_mV);
+					adc_mV = (adc_reading*mV_multiplier); // Calculates ADC in mV
+					dtostrf(adc_mV,6,2,str_adv_mV);  // Changes value from double to string
      32a:	4e 01       	movw	r8, r28
      32c:	eb e2       	ldi	r30, 0x2B	; 43
      32e:	8e 0e       	add	r8, r30
      330:	91 1c       	adc	r9, r1
-				
+				/* Report Temperature to user */
 				case 'T':
 				case 't':
 					if (input == Temp) {
 						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
-						dtostrf(temp,4,2,str_temp);
+						dtostrf(temp,4,2,str_temp); // Changes value from double to string
      332:	ce 01       	movw	r24, r28
      334:	4f 96       	adiw	r24, 0x1f	; 31
      336:	9a ab       	std	Y+50, r25	; 0x32
@@ -536,6 +535,7 @@ int main(void)
      358:	ff 4f       	sbci	r31, 0xFF	; 255
      35a:	0c 94 43 04 	jmp	0x886	; 0x886 <__tablejump2__>
 				
+				/* Sets ADC to ADC2 */
 				case 'M':
 				case 'm':
 					input = Temp;
@@ -550,6 +550,7 @@ int main(void)
 				break;
      370:	e4 cf       	rjmp	.-56     	; 0x33a <main+0x72>
 				
+				/* Sets ADC to ADC1 */
 				case 'N':
 				case 'n':
 					input = LDR;
@@ -564,6 +565,7 @@ int main(void)
 				break;
      384:	da cf       	rjmp	.-76     	; 0x33a <main+0x72>
 				
+				/* Sets ADC to ADC0 */
 				case 'P':
 				case 'p':
 					input = Volt;
@@ -577,6 +579,7 @@ int main(void)
 				break;
      396:	d1 cf       	rjmp	.-94     	; 0x33a <main+0x72>
 				
+				/* Report Temperature to user */
 				case 'T':
 				case 't':
 					if (input == Temp) {
@@ -595,14 +598,14 @@ int main(void)
      3b8:	70 93 8b 02 	sts	0x028B, r23	; 0x80028b <temp+0x1>
      3bc:	80 93 8c 02 	sts	0x028C, r24	; 0x80028c <temp+0x2>
      3c0:	90 93 8d 02 	sts	0x028D, r25	; 0x80028d <temp+0x3>
-						dtostrf(temp,4,2,str_temp);
+						dtostrf(temp,4,2,str_temp); // Changes value from double to string
      3c4:	8e 01       	movw	r16, r28
      3c6:	01 5e       	subi	r16, 0xE1	; 225
      3c8:	1f 4f       	sbci	r17, 0xFF	; 255
      3ca:	22 e0       	ldi	r18, 0x02	; 2
      3cc:	44 e0       	ldi	r20, 0x04	; 4
      3ce:	0e 94 49 04 	call	0x892	; 0x892 <dtostrf>
-						sprintf(data,"LM35 Temperature = %s deg C",str_temp);
+						sprintf(data,"LM35 Temperature = %s deg C",str_temp); //Report Temperature value
      3d2:	fa a9       	ldd	r31, Y+50	; 0x32
      3d4:	ff 93       	push	r31
      3d6:	29 a9       	ldd	r18, Y+49	; 0x31
@@ -631,9 +634,9 @@ int main(void)
      400:	91 e0       	ldi	r25, 0x01	; 1
      402:	0e 94 40 01 	call	0x280	; 0x280 <sendmsg>
      406:	99 cf       	rjmp	.-206    	; 0x33a <main+0x72>
-					}
 				break;
 				
+				/* Report Bright/Dark to user */
 				case 'L':
 				case 'l':
 					if (input == LDR) {
@@ -647,7 +650,7 @@ int main(void)
      41a:	92 40       	sbci	r25, 0x02	; 2
      41c:	28 f0       	brcs	.+10     	; 0x428 <__LOCK_REGION_LENGTH__+0x28>
 							{
-								sendmsg(msg7);
+								sendmsg(msg7); // Report Bright
      41e:	8b e0       	ldi	r24, 0x0B	; 11
      420:	91 e0       	ldi	r25, 0x01	; 1
      422:	0e 94 40 01 	call	0x280	; 0x280 <sendmsg>
@@ -655,7 +658,7 @@ int main(void)
 							}
 							else
 							{
-								sendmsg(msg8);
+								sendmsg(msg8); // Report Dark
      428:	80 e0       	ldi	r24, 0x00	; 0
      42a:	91 e0       	ldi	r25, 0x01	; 1
      42c:	0e 94 40 01 	call	0x280	; 0x280 <sendmsg>
@@ -670,9 +673,9 @@ int main(void)
      43a:	7f cf       	rjmp	.-258    	; 0x33a <main+0x72>
 				break;
 				
+				/* Report ADC Value to user */
 				case 'A':
 				case 'a':
-				
 					sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
      43c:	80 91 89 02 	lds	r24, 0x0289	; 0x800289 <adc_reading+0x1>
      440:	8f 93       	push	r24
@@ -697,11 +700,10 @@ int main(void)
      468:	0f 90       	pop	r0
      46a:	67 cf       	rjmp	.-306    	; 0x33a <main+0x72>
 				
-				
+				/* Report ADC Value in mV to user */
 				case 'V':
 				case 'v':
-				
-					adc_mV = (adc_reading*mV_multiplier);
+					adc_mV = (adc_reading*mV_multiplier); // Calculates ADC in mV
      46c:	60 91 88 02 	lds	r22, 0x0288	; 0x800288 <adc_reading>
      470:	70 91 89 02 	lds	r23, 0x0289	; 0x800289 <adc_reading+0x1>
      474:	80 e0       	ldi	r24, 0x00	; 0
@@ -716,7 +718,7 @@ int main(void)
      48c:	70 93 1f 02 	sts	0x021F, r23	; 0x80021f <adc_mV+0x1>
      490:	80 93 20 02 	sts	0x0220, r24	; 0x800220 <adc_mV+0x2>
      494:	90 93 21 02 	sts	0x0221, r25	; 0x800221 <adc_mV+0x3>
-					dtostrf(adc_mV,6,2,str_adv_mV);
+					dtostrf(adc_mV,6,2,str_adv_mV);  // Changes value from double to string
      498:	84 01       	movw	r16, r8
      49a:	22 e0       	ldi	r18, 0x02	; 2
      49c:	46 e0       	ldi	r20, 0x06	; 6
@@ -731,10 +733,9 @@ int main(void)
      4ae:	bf 92       	push	r11
      4b0:	af 92       	push	r10
      4b2:	0e 94 69 04 	call	0x8d2	; 0x8d2 <sprintf>
-					sendmsg(data);
+					sendmsg(data);	
      4b6:	c5 01       	movw	r24, r10
      4b8:	0e 94 40 01 	call	0x280	; 0x280 <sendmsg>
-				
 				break;
      4bc:	0f 90       	pop	r0
      4be:	0f 90       	pop	r0
@@ -744,7 +745,7 @@ int main(void)
      4c6:	0f 90       	pop	r0
      4c8:	38 cf       	rjmp	.-400    	; 0x33a <main+0x72>
 				
-				
+				/* Report Values Continuously */
 				case 'C':
 				case 'c':
 					enContDisplay = 1; //enable continuous adc display
@@ -755,6 +756,7 @@ int main(void)
 				break;
      4d6:	31 cf       	rjmp	.-414    	; 0x33a <main+0x72>
 				
+				/* Stop Reporting Values Continuously */
 				case 'E':
 				case 'e':
 					enContDisplay = 0; //disable continuous adc display
@@ -763,9 +765,9 @@ int main(void)
 				break;
      4e0:	2c cf       	rjmp	.-424    	; 0x33a <main+0x72>
 				
+				/* Report OCR2A Value */
 				case 'S':
 				case 's':
-				
 					OC = OCR2A;
      4e2:	f2 01       	movw	r30, r4
      4e4:	60 81       	ld	r22, Z
@@ -804,6 +806,7 @@ int main(void)
      52e:	0f 90       	pop	r0
      530:	04 cf       	rjmp	.-504    	; 0x33a <main+0x72>
 				
+				/* Sets LED Brightness Level */
 				case '0' ... '9':
 					//Brightness = atoi(ch);
 					Brightness = ch - '0';
@@ -844,10 +847,7 @@ int main(void)
      578:	0f 90       	pop	r0
      57a:	0f 90       	pop	r0
      57c:	de ce       	rjmp	.-580    	; 0x33a <main+0x72>
-					 sprintf(data, "%d",Brightness);
-					 sendmsg(data);
-				break;
-				*/
+				
 				default:
 				sendmsg(msg1); /*send default message*/
      57e:	8d eb       	ldi	r24, 0xBD	; 189
