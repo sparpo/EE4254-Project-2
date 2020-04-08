@@ -50,6 +50,8 @@ int main(void)
 	char str_temp[6];
 	char str_OC[6];
 	char str_adv_mV[6];
+	double mV_multiplier =4.88; // 0.00488 * 1000
+	int temp_divider = 2; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 	init_ports();
 	init_USART();
 	init_adc();
@@ -91,7 +93,7 @@ int main(void)
 				case 'T':
 				case 't':
 					if (input == Temp) {
-						temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
+						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 						dtostrf(temp,4,2,str_temp);
 						sprintf(data,"LM35 Temperature = %s deg C",str_temp);
 						sendmsg(data);
@@ -129,8 +131,8 @@ int main(void)
 				case 'V':
 				case 'v':
 				
-					adc_mV = (adc_reading/1000)*5000;
-					dtostrf(adc_mV,4,2,str_adv_mV);
+					adc_mV = (adc_reading*mV_multiplier);
+					dtostrf(adc_mV,6,2,str_adv_mV);
 					sprintf(data, "ADC value = %s mV",str_adv_mV); //Report ADC value in mV
 					sendmsg(data);
 				
