@@ -33,7 +33,9 @@ unsigned char queue[100];       /*character queue*/
 unsigned int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
-	
+int adc_mV;
+double temp;
+double OC;
 enum adc{Volt,LDR,Temp} input;
 enum active{pot,lit,temper,OCR,ADC_val} on; // potentiometer measuring active,LDR measuring active,LM35 sensor active, OC2RA, ADC value
 
@@ -41,16 +43,14 @@ unsigned int enContDisplay = 0; //enable continuous display
 
 int main(void)
 {
-	int adc_mV;
-	double temp;
-	double OC;
+
 	char ch;  /* character variable for received character*/
 	char data[30];
 	init_ports();
 	init_USART();
 	init_adc();
 	init_timer0();
-	init_timer1();
+	//init_timer1();
 	init_timer2();
 
 
@@ -112,21 +112,21 @@ int main(void)
 				
 				case 'A':
 				case 'a':
-				{
+				
 					sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
 					sendmsg(data);
 				break;
-				}
+				
 				
 				case 'V':
 				case 'v':
-				{
+				
 					adc_mV = (adc_reading/1000)*5000;
 					sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
 					sendmsg(data);
 				
 				break;
-				}
+				
 				
 				case 'C':
 				case 'c':
@@ -140,12 +140,12 @@ int main(void)
 				
 				case 'S':
 				case 's':
-				{
+				
 					OC = OCR2A;
 					sprintf(data, "OCR2A = %f", OC);
 					sendmsg(data);
 				break;
-				}
+				
 				default:
 				sendmsg(msg1); /*send default message*/
 			}
@@ -204,7 +204,6 @@ void init_adc() {
 	ADMUX = (1<<6)|(1<<1); //sets voltage ref to Vcc and starts ADC2
 	ADCSRA  = (1<<7)|(1<<6)|(1<<5)|(1<<3)|(7<<0); //enable adc, starts conversion, enable interrupt, sets prescalar 128
 	ADCSRB = (1<<2);// sets timer0 overflow 
-
 }
 
 void init_ports() {
@@ -214,11 +213,8 @@ void init_ports() {
 }
 
 void init_USART() {
-	
-	UCSR0A	= (1<<RXC0) | (1<<TXC0); // enable RX and TX
-	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXC0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
+	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
 	UBRR0	= 103;  //baud rate = 9600
-	UCSR0C = (0b00000110); //setting data to 8 bits 
 }
 
 void init_timer0() {
@@ -240,8 +236,8 @@ void init_timer1() {
 
 void init_timer2() {
 	
-	TCCR0A = (1<<7)|(1<<0); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode
-	TCCR0B = (6<<0); // Phase Correct PWM Mode, prescalar 256
+	TCCR2A = (1<<7)|(1<<0); // Clear OC2A on Compare Match when Upcounting , Phase Correct PWM Mode
+	TCCR2B = (6<<0); // Phase Correct PWM Mode, prescalar 256
 	OCR2A = 0; // turn off led
 	
 }
@@ -271,8 +267,6 @@ ISR(USART_TX_vect)
 	/*send next character and increment index*/
 	if (qcntr != sndcntr)
 		UDR0 = queue[sndcntr++];
-	else
-		UCSR0B	= (1<<RXEN0) | (1<<TXEN0) ;  /* Turn off UDRIE0 */
 }
 
 ISR (ADC_vect)//handles ADC interrupts
@@ -299,4 +293,3 @@ ISR (ADC_vect)//handles ADC interrupts
 	} 
 	TIFR0 = (1<<0); //clears Counter0 overflow
 }
-	
