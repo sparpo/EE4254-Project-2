@@ -160,7 +160,8 @@ int main(void)
 				break;
 				
 				case '0' ... '9':
-					Brightness = atoi(ch);
+					//Brightness = atoi(ch);
+					Brightness = ch - '0';
 					OCR2A = Brightness * 25.5;
 					sprintf(data, "%d",Brightness);
 					sendmsg(data);
@@ -191,8 +192,9 @@ int main(void)
 			if(enContDisplay) {
 				switch(on){
 					case pot:
-						adc_mV = (adc_reading/1000)*5000;
-						sprintf(data, "ADC value = %f mV", adc_mV); //Report ADC value in mV
+						adc_mV = (adc_reading*mV_multiplier);
+						dtostrf(adc_mV,6,2,str_adv_mV);
+						sprintf(data, "ADC value = %s mV",str_adv_mV); //Report ADC value in mV
 						sendmsg(data);
 					break;
 					
@@ -208,19 +210,9 @@ int main(void)
 					break;
 					
 					case temper:
-						temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
-						sprintf(data,"LM35 Temperature = %f deg C",temp);
-						sendmsg(data);
-					break;
-					
-					case OCR:
-						OC = OCR2A;
-						sprintf(data, "OCR2A = %f", OC);
-						sendmsg(data);
-					break;
-					
-					case ADC_val:
-						sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
+						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
+						dtostrf(temp,4,2,str_temp);
+						sprintf(data,"LM35 Temperature = %s deg C",str_temp);
 						sendmsg(data);
 					break;
 					
