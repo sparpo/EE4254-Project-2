@@ -16,6 +16,7 @@ void init_timer2(void);
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include<stdlib.h>
 
 
 /*message arrays*/
@@ -33,11 +34,11 @@ unsigned char queue[100];       /*character queue*/
 unsigned int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
-int adc_mV;
+double adc_mV;
 double temp;
 double OC;
 enum adc{Volt,LDR,Temp} input;
-enum active{pot,lit,temper,OCR,ADC_val} on; // potentiometer measuring active,LDR measuring active,LM35 sensor active, OC2RA, ADC value
+enum active{pot,lit,temper} on; // potentiometer measuring active,LDR measuring active,LM35 sensor active, OC2RA, ADC value
 
 unsigned int enContDisplay = 0; //enable continuous display
 
@@ -46,6 +47,9 @@ int main(void)
 
 	char ch;  /* character variable for received character*/
 	char data[30];
+	char str_temp[6];
+	char str_OC[6];
+	char str_adv_mV[6];
 	init_ports();
 	init_USART();
 	init_adc();
@@ -66,18 +70,21 @@ int main(void)
 				case 'M':
 				case 'm':
 					input = Temp;
+					on = temper;
 					sendmsg(msg2);
 				break;
 				
 				case 'N':
 				case 'n':
 					input = LDR;
+					on = lit;
 					sendmsg(msg3);
 				break;
 				
 				case 'P':
 				case 'p':
 					input = Volt;
+					on = pot;
 					sendmsg(msg4);
 				break;
 				
@@ -85,7 +92,8 @@ int main(void)
 				case 't':
 					if (input == Temp) {
 						temp = adc_reading/2.0; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change
-						sprintf(data,"LM35 Temperature = %f deg C",temp);
+						dtostrf(temp,4,2,str_temp);
+						sprintf(data,"LM35 Temperature = %s deg C",str_temp);
 						sendmsg(data);
 					} else {
 						//Give warning
@@ -122,7 +130,8 @@ int main(void)
 				case 'v':
 				
 					adc_mV = (adc_reading/1000)*5000;
-					sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
+					dtostrf(adc_mV,4,2,str_adv_mV);
+					sprintf(data, "ADC value = %s mV",str_adv_mV); //Report ADC value in mV
 					sendmsg(data);
 				
 				break;
@@ -142,7 +151,8 @@ int main(void)
 				case 's':
 				
 					OC = OCR2A;
-					sprintf(data, "OCR2A = %f", OC);
+					dtostrf(OC,4,2,str_OC);
+					sprintf(data, "OCR2A = %s", str_OC);
 					sendmsg(data);
 				break;
 				
@@ -152,11 +162,11 @@ int main(void)
 		}
 	/*	
 		if(new_adc_data) {
-			while(enContDisplay) {
+			if(enContDisplay) {
 				switch(on){
 					case pot:
 						adc_mV = (adc_reading/1000)*5000;
-						sprintf(data, "ADC value = %d mV", adc_mV); //Report ADC value in mV
+						sprintf(data, "ADC value = %f mV", adc_mV); //Report ADC value in mV
 						sendmsg(data);
 					break;
 					
