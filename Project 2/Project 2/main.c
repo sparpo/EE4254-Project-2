@@ -13,13 +13,13 @@
 #include<stdlib.h>
 
 
-/* Initialized Voids */
+/* Initializing Voids */
 void sendmsg (char *s);
-void init_USART(void); // initializes USART
+void init_USART(void); 
 void init_adc(void); 
-void init_ports(void); // initializes ports
+void init_ports(void); 
 void init_timer0(void); 
-void init_timer1(void); // initializes
+void init_timer1(void); 
 void init_timer2(void);
 
 
