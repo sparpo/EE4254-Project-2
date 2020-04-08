@@ -248,7 +248,7 @@ void init_ports() {
 /* Initializing USART registers */
 void init_USART() {
 	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
-	UBRR0	= 16;  //baud rate = 9600
+	UBRR0	= 16;  //baud rate = 115.2k
 }
 
 /* Initializing Timer0 registers */
