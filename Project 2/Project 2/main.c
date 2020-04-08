@@ -60,7 +60,7 @@ int main(void)
 	char ch;  /* character variable for received character*/
 	char data[30]; // used to set of string in sprintf
 	char str_temp[7]; // string written to user for temperature in /centigrade
-	char str_adv_mV[9]; // string written to user for adc in mV
+	char str_adc_mV[9]; // string written to user for adc in mV
 
 	int Brightness; // variable that user will enter to set brightness of LED
 	
@@ -145,8 +145,8 @@ int main(void)
 				case 'V':
 				case 'v':
 					adc_mV = (adc_reading*mV_multiplier); // Calculates ADC in mV
-					dtostrf(adc_mV,8,2,str_adv_mV);  // Changes value from double to string
-					sprintf(data, "ADC value = %s mV",str_adv_mV); //Report ADC value in mV
+					dtostrf(adc_mV,8,2,str_adc_mV);  // Changes value from double to string
+					sprintf(data, "ADC value = %s mV",str_adc_mV); //Report ADC value in mV
 					sendmsg(data);	
 				break;
 				
@@ -190,8 +190,8 @@ int main(void)
 				switch(input){
 					case Volt:
 						adc_mV = (adc_reading*mV_multiplier);
-						dtostrf(adc_mV,8,2,str_adv_mV);
-						sprintf(data, "ADC value = %s mV","5"); //Report ADC value in mV
+						dtostrf(adc_mV,8,2,str_adc_mV);
+						sprintf(data, "ADC value = %s mV",str_adc_mV); //Report ADC value in mV
 						sendmsg(data);
 					break;
 					
