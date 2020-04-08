@@ -62,6 +62,7 @@ int main(void)
 	double mV_multiplier = 4.88; // 0.00488 * 1000
 	int temp_divider = 2; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 	int Brightness; // variable that user will enter to set brightness of LED
+	int Light_Threshold = 512; // threhold that if over LDR is bright
 	
 	/* Calling Initialized Registers */
 	init_ports(); // initializes ports
@@ -122,7 +123,7 @@ int main(void)
 				case 'L':
 				case 'l':
 					if (input == LDR) {
-							if(adc_reading>512)
+							if(adc_reading>Light_Threshold)
 							{
 								sendmsg(msg7); // Report Bright
 							}
