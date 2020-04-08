@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 00000068  00000000  00000000  00001530  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000c5b  00000000  00000000  00001598  2**0
+  6 .debug_info   00000c6b  00000000  00000000  00001598  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 0000076f  00000000  00000000  000021f3  2**0
+  7 .debug_abbrev 0000076f  00000000  00000000  00002203  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000004cb  00000000  00000000  00002962  2**0
+  8 .debug_line   000004cb  00000000  00000000  00002972  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000f4  00000000  00000000  00002e30  2**2
+  9 .debug_frame  000000f4  00000000  00000000  00002e40  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000049f  00000000  00000000  00002f24  2**0
+ 10 .debug_str    000004b5  00000000  00000000  00002f34  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00000211  00000000  00000000  000033c3  2**0
+ 11 .debug_loc    00000211  00000000  00000000  000033e9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000058  00000000  00000000  000035d4  2**0
+ 12 .debug_ranges 00000058  00000000  00000000  000035fa  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -422,7 +422,7 @@ int main(void)
      2d6:	de bf       	out	0x3e, r29	; 62
      2d8:	0f be       	out	0x3f, r0	; 63
      2da:	cd bf       	out	0x3d, r28	; 61
-	double mV_multiplier =4.88; // 0.00488 * 1000
+	double mV_multiplier = 4.88; // 0.00488 * 1000
 	int temp_divider = 2; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 	int Brightness; // variable that user will enter to set brightness of LED
 	
@@ -462,7 +462,7 @@ int main(void)
 				case '0' ... '9':
 					
 					Brightness = ch - '0';
-					OCR2A = Brightness * 25.5;
+					OCR2A = Brightness * Brightness_Multiplier;
      306:	0f 2e       	mov	r0, r31
      308:	f3 eb       	ldi	r31, 0xB3	; 179
      30a:	4f 2e       	mov	r4, r31
@@ -473,12 +473,12 @@ int main(void)
 				case 'S':
 				case 's':
 					OC = OCR2A;
-					dtostrf(OC,4,2,str_OC);
+					dtostrf(OC,4,2,str_OC); // Changes value from double to string
      310:	3e 01       	movw	r6, r28
      312:	25 e2       	ldi	r18, 0x25	; 37
      314:	62 0e       	add	r6, r18
      316:	71 1c       	adc	r7, r1
-					sprintf(data, "OCR2A = %s", str_OC);
+					sprintf(data, "OCR2A = %s", str_OC); // Report OCR2A value
      318:	0f 2e       	mov	r0, r31
      31a:	ff e0       	ldi	r31, 0x0F	; 15
      31c:	2f 2e       	mov	r2, r31
@@ -779,12 +779,12 @@ int main(void)
      4f4:	70 93 8f 02 	sts	0x028F, r23	; 0x80028f <OC+0x1>
      4f8:	80 93 90 02 	sts	0x0290, r24	; 0x800290 <OC+0x2>
      4fc:	90 93 91 02 	sts	0x0291, r25	; 0x800291 <OC+0x3>
-					dtostrf(OC,4,2,str_OC);
+					dtostrf(OC,4,2,str_OC); // Changes value from double to string
      500:	83 01       	movw	r16, r6
      502:	22 e0       	ldi	r18, 0x02	; 2
      504:	44 e0       	ldi	r20, 0x04	; 4
      506:	0e 94 35 04 	call	0x86a	; 0x86a <dtostrf>
-					sprintf(data, "OCR2A = %s", str_OC);
+					sprintf(data, "OCR2A = %s", str_OC); // Report OCR2A value
      50a:	7f 92       	push	r7
      50c:	6f 92       	push	r6
      50e:	3f 92       	push	r3
@@ -808,7 +808,7 @@ int main(void)
 				case '0' ... '9':
 					
 					Brightness = ch - '0';
-					OCR2A = Brightness * 25.5;
+					OCR2A = Brightness * Brightness_Multiplier;
      52e:	70 e0       	ldi	r23, 0x00	; 0
      530:	60 53       	subi	r22, 0x30	; 48
      532:	71 09       	sbc	r23, r1
@@ -825,8 +825,6 @@ int main(void)
      54c:	0e 94 05 03 	call	0x60a	; 0x60a <__fixunssfsi>
      550:	f2 01       	movw	r30, r4
      552:	60 83       	st	Z, r22
-					//sprintf(data, "%d",Brightness);
-					//sendmsg(data);
 				break;
      554:	f2 ce       	rjmp	.-540    	; 0x33a <main+0x72>
 				

@@ -58,7 +58,8 @@ int main(void)
 	char str_temp[6]; // string written to user for temperature in /centigrade
 	char str_OC[6]; // string written to user for OCR2A
 	char str_adv_mV[6]; // string written to user for adc in mV
-	double mV_multiplier =4.88; // 0.00488 * 1000
+	double Brightness_Multiplier = 25.5; // 255/10 = 25.5 
+	double mV_multiplier = 4.88; // 0.00488 * 1000
 	int temp_divider = 2; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 	int Brightness; // variable that user will enter to set brightness of LED
 	
@@ -167,8 +168,8 @@ int main(void)
 				case 'S':
 				case 's':
 					OC = OCR2A;
-					dtostrf(OC,4,2,str_OC);
-					sprintf(data, "OCR2A = %s", str_OC);
+					dtostrf(OC,4,2,str_OC); // Changes value from double to string
+					sprintf(data, "OCR2A = %s", str_OC); // Report OCR2A value
 					sendmsg(data);
 				break;
 				
@@ -176,9 +177,7 @@ int main(void)
 				case '0' ... '9':
 					
 					Brightness = ch - '0';
-					OCR2A = Brightness * 25.5;
-					//sprintf(data, "%d",Brightness);
-					//sendmsg(data);
+					OCR2A = Brightness * Brightness_Multiplier;
 				break;
 				
 				default:
