@@ -14,7 +14,7 @@
 #define Brightness_Multiplier 25.5 // 255/10 = 25.5
 #define mV_multiplier 4.88 // 0.00488 * 1000
 #define temp_divider 2 //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
-#define Light_Threshold 512 // threhold that if over LDR is bright
+#define Light_Threshold 512 // threshold that if over LDR is bright
 
 /* Initializing Voids */
 void sendmsg (char *s);
@@ -242,7 +242,7 @@ void init_ports() {
 /* Initializing USART registers */
 void init_USART() {
 	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
-	UBRR0	= 9;  //baud rate = 10000
+	UBRR0	= 103;  //baud rate = 10000
 }
 
 /* Initializing Timer0 registers */
