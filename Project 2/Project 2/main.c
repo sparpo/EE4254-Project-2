@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #define Brightness_Multiplier 25.5 // 255/10 = 25.5
 #define mV_multiplier 4.88 // 0.00488 * 1000
-#define temp_divider 2 //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
+#define temp_divider 2.0 //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 #define Light_Threshold 512 // threhold that if over LDR is bright
 
 /* Initializing Voids */
@@ -46,6 +46,7 @@ volatile unsigned int new_adc_data; // flag to show new data
 float adc_mV; // adc value in mV saved here
 float temp; // temperature in Centigrade saved here
 float OC; // OCR2A value saved here
+
 enum adc{Volt,LDR,Temp} input;
 
 unsigned int enContDisplay = 0; //enable continuous display
@@ -54,11 +55,12 @@ unsigned int enContDisplay = 0; //enable continuous display
 /* Main */
 int main(void)
 {
-	/* Initialized Local Variables */	
+	/* Initialized Local Variables */		
+
 	char ch;  /* character variable for received character*/
 	char data[30]; // used to set of string in sprintf
-	char str_temp[6]; // string written to user for temperature in /centigrade
-	char str_adv_mV[6]; // string written to user for adc in mV
+	char str_temp[7]; // string written to user for temperature in /centigrade
+	char str_adv_mV[9]; // string written to user for adc in mV
 
 	int Brightness; // variable that user will enter to set brightness of LED
 	
@@ -105,7 +107,7 @@ int main(void)
 				case 't':
 					if (input == Temp) {
 						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
-						dtostrf(temp,4,2,str_temp); // Changes value from double to string
+						dtostrf(temp,6,2,str_temp); // Changes value from double to string
 						sprintf(data,"LM35 Temperature = %s deg C",str_temp); //Report Temperature value
 						sendmsg(data);
 					} else {
@@ -143,7 +145,7 @@ int main(void)
 				case 'V':
 				case 'v':
 					adc_mV = (adc_reading*mV_multiplier); // Calculates ADC in mV
-					dtostrf(adc_mV,6,2,str_adv_mV);  // Changes value from double to string
+					dtostrf(adc_mV,8,2,str_adv_mV);  // Changes value from double to string
 					sprintf(data, "ADC value = %s mV",str_adv_mV); //Report ADC value in mV
 					sendmsg(data);	
 				break;
@@ -188,8 +190,8 @@ int main(void)
 				switch(input){
 					case Volt:
 						adc_mV = (adc_reading*mV_multiplier);
-						dtostrf(adc_mV,6,2,str_adv_mV);
-						sprintf(data, "ADC value = %s mV",str_adv_mV); //Report ADC value in mV
+						dtostrf(adc_mV,8,2,str_adv_mV);
+						sprintf(data, "ADC value = %s mV","5"); //Report ADC value in mV
 						sendmsg(data);
 					break;
 					
@@ -206,14 +208,14 @@ int main(void)
 					
 					case Temp:
 						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
-						dtostrf(temp,4,2,str_temp); // Changes value from double to string
+						dtostrf(temp,6,2,str_temp); // Changes value from double to string
 						sprintf(data,"LM35 Temperature = %s deg C",str_temp); //Report Temperature value
 						sendmsg(data);
 					break;
 					
 					default:
 						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
-						dtostrf(temp,4,2,str_temp); // Changes value from double to string
+						dtostrf(temp,6,2,str_temp); // Changes value from double to string
 						sprintf(data,"LM35 Temperature = %s deg C",str_temp); //Report Temperature value
 						sendmsg(data);
 				}
