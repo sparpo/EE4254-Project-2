@@ -10,7 +10,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 
 
 /* Initializing Voids */
@@ -32,7 +32,7 @@ char msg5[] = {"Must set ADC for temperature by typing 'M' or 'm'"}; // warning 
 char msg6[] = {"Must set ADC for LDR by typing 'N' or 'n'"}; // warning for when incorrectly asking for LDR result
 char msg7[] = {"LDR = Bright"}; // LDR result 
 char msg8[] = {"LDR = Dark"}; // LDR result 
-
+char msg9[] = {"Continuous display already disabled"};
 
 /* Initialized Variables */		
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
@@ -40,11 +40,10 @@ unsigned char queue[100];       /*character queue*/
 unsigned int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
-double adc_mV; // adc value in mV saved here
-double temp; // temperature in Centigrade saved here
-double OC; // OCR2A value saved here
+float adc_mV; // adc value in mV saved here
+float temp; // temperature in Centigrade saved here
+float OC; // OCR2A value saved here
 enum adc{Volt,LDR,Temp} input;
-enum active{pot,lit,temper} on; // potentiometer measuring active,LDR measuring active,LM35 sensor active, OC2RA, ADC value
 
 unsigned int enContDisplay = 0; //enable continuous display
 
@@ -58,8 +57,8 @@ int main(void)
 	char str_temp[6]; // string written to user for temperature in /centigrade
 	char str_OC[6]; // string written to user for OCR2A
 	char str_adv_mV[6]; // string written to user for adc in mV
-	double Brightness_Multiplier = 25.5; // 255/10 = 25.5 
-	double mV_multiplier = 4.88; // 0.00488 * 1000
+	float Brightness_Multiplier = 25.5; // 255/10 = 25.5 
+	float mV_multiplier = 4.88; // 0.00488 * 1000
 	int temp_divider = 2; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 	int Brightness; // variable that user will enter to set brightness of LED
 	int Light_Threshold = 512; // threhold that if over LDR is bright
@@ -85,7 +84,6 @@ int main(void)
 				case 'M':
 				case 'm':
 					input = Temp;
-					on = temper;
 					sendmsg(msg2);
 				break;
 				
@@ -93,7 +91,7 @@ int main(void)
 				case 'N':
 				case 'n':
 					input = LDR;
-					on = lit;
+
 					sendmsg(msg3);
 				break;
 				
@@ -101,7 +99,7 @@ int main(void)
 				case 'P':
 				case 'p':
 					input = Volt;
-					on = pot;
+
 					sendmsg(msg4);
 				break;
 				
@@ -162,7 +160,12 @@ int main(void)
 				/* Stop Reporting Values Continuously */
 				case 'E':
 				case 'e':
+					if(enContDisplay==0) {
+						sendmsg(msg9);
+					}
 					enContDisplay = 0; //disable continuous adc display
+					
+					
 				break;
 				
 				/* Report OCR2A Value */
@@ -186,18 +189,18 @@ int main(void)
 			}
 		}
 	/*Continuous Loop */   
-	/*
+	
 		if(new_adc_data) {
 			if(enContDisplay) {
-				switch(on){
-					case pot:
+				switch(input){
+					case Volt:
 						adc_mV = (adc_reading*mV_multiplier);
 						dtostrf(adc_mV,6,2,str_adv_mV);
 						sprintf(data, "ADC value = %s mV",str_adv_mV); //Report ADC value in mV
 						sendmsg(data);
 					break;
 					
-					case lit:
+					case LDR:
 						if(adc_reading>512)
 						{
 							sendmsg(msg7);
@@ -208,7 +211,7 @@ int main(void)
 						}
 					break;
 					
-					case temper:
+					case Temp:
 						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 						dtostrf(temp,4,2,str_temp);
 						sprintf(data,"LM35 Temperature = %s deg C",str_temp);
@@ -222,7 +225,7 @@ int main(void)
 				}
 			}
 			new_adc_data=0;
-		}*/
+		}
 	}
 	return 1;
 	
@@ -245,7 +248,7 @@ void init_ports() {
 /* Initializing USART registers */
 void init_USART() {
 	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
-	UBRR0	= 103;  //baud rate = 9600
+	UBRR0	= 16;  //baud rate = 9600
 }
 
 /* Initializing Timer0 registers */
