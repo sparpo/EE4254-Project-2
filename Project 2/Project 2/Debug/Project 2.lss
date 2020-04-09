@@ -322,7 +322,7 @@ void init_timer1() {
 0000024a <init_USART>:
      24a:	88 e5       	ldi	r24, 0x58	; 88
      24c:	80 93 c1 00 	sts	0x00C1, r24	; 0x8000c1 <__DATA_REGION_ORIGIN__+0x61>
-     250:	87 e6       	ldi	r24, 0x67	; 103
+     250:	8a e0       	ldi	r24, 0x0A	; 10
      252:	90 e0       	ldi	r25, 0x00	; 0
      254:	90 93 c5 00 	sts	0x00C5, r25	; 0x8000c5 <__DATA_REGION_ORIGIN__+0x65>
      258:	80 93 c4 00 	sts	0x00C4, r24	; 0x8000c4 <__DATA_REGION_ORIGIN__+0x64>
