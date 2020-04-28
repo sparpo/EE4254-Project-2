@@ -12,8 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define Brightness_Multiplier 25.5 // 255/10 = 25.5
-#define mV_multiplier 4.88 // 0.00488 * 1000
-#define temp_divider 2.0 //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
+#define divider 1024.0 
 #define Light_Threshold 512 // threshold that if over LDR is bright
 
 /* Initializing Voids */
@@ -39,13 +38,13 @@ char msg9[] = {"Continuous display already disabled"};
 
 /* Initialized Variables */		
 unsigned char qcntr = 0,sndcntr = 0;   /*indexes into the queue*/
-unsigned char queue[100];       /*character queue*/
-unsigned int adc_reading; // adc value saved here
+unsigned char queue[50];       /*character queue*/
+unsigned long int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
-float adc_mV; // adc value in mV saved here
-float temp; // temperature in Centigrade saved here
-float OC; // OCR2A value saved here
+unsigned long int adc_mV; // adc value in mV saved here
+unsigned long int temp; // temperature in Centigrade saved here
+unsigned long intOC; // OCR2A value saved here
 
 enum adc{Volt,LDR,Temp} input;
 
@@ -106,7 +105,7 @@ int main(void)
 				case 'T':
 				case 't':
 					if (input == Temp) {
-						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
+						temp = (adc_reading*500)/divider; 
 						dtostrf(temp,6,2,str_temp); // Changes value from double to string
 						sprintf(data,"LM35 Temperature = %s deg C",str_temp); //Report Temperature value
 						sendmsg(data);
@@ -137,14 +136,14 @@ int main(void)
 				/* Report ADC Value to user */
 				case 'A':
 				case 'a':
-					sprintf(data, "ADC value = %d", adc_reading); //Report ADC value
+					sprintf(data, "ADC value = %lu", adc_reading); //Report ADC value
 					sendmsg(data);
 				break;
 				
 				/* Report ADC Value in mV to user */
 				case 'V':
 				case 'v':
-					adc_mV = (adc_reading*mV_multiplier); // Calculates ADC in mV
+					adc_mV = (adc_reading/divider); // Calculates ADC in mV
 					dtostrf(adc_mV,8,2,str_adc_mV);  // Changes value from double to string
 					sprintf(data, "ADC value = %s mV",str_adc_mV); //Report ADC value in mV
 					sendmsg(data);	
@@ -189,7 +188,7 @@ int main(void)
 			if(enContDisplay) {
 				switch(input){
 					case Volt:
-						adc_mV = (adc_reading*mV_multiplier);
+						adc_mV = (adc_reading/divider);
 						dtostrf(adc_mV,8,2,str_adc_mV);
 						sprintf(data, "ADC value = %s mV",str_adc_mV); //Report ADC value in mV
 						sendmsg(data);
@@ -207,14 +206,14 @@ int main(void)
 					break;
 					
 					case Temp:
-						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
+						temp = (adc_reading*500)/divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 						dtostrf(temp,6,2,str_temp); // Changes value from double to string
 						sprintf(data,"LM35 Temperature = %s deg C",str_temp); //Report Temperature value
 						sendmsg(data);
 					break;
 					
 					default:
-						temp = adc_reading/temp_divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
+						temp = (adc_reading*500)/divider; //(5v/1023)=4.887mV = 5mV, every deg c is 10Mv voltage change therefore divide by 2
 						dtostrf(temp,6,2,str_temp); // Changes value from double to string
 						sprintf(data,"LM35 Temperature = %s deg C",str_temp); //Report Temperature value
 						sendmsg(data);
@@ -244,7 +243,7 @@ void init_ports() {
 /* Initializing USART registers */
 void init_USART() {
 	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
-	UBRR0 = 10;  //baud rate = 90909
+	UBRR0 = 16;  //baud rate = 90909
 }
 
 /* Initializing Timer0 registers */
@@ -254,15 +253,6 @@ void init_timer0() {
 	TIMSK0 = 0;
 	TCCR0B = (5<<0); // prescalar 1024
 	TCNT0 = 6; // TCNT0 set to 6 so that will cause timer overflow after 16 ms
-
-}
-
-/* Initializing Timer1 registers */
-void init_timer1() {
-	
-	TCCR1A = 0;
-	TCCR1B = (1<<1); // prescalar 8 
-	TIMSK1 = (1<<5) | (1<<0); //Input Capture set for falling edge with noise control turned OFF , Input Capture and Timer1 Overflow Interrupts enable
 
 }
 
@@ -309,6 +299,7 @@ ISR (ADC_vect)//handles ADC interrupts
 	//adc_reading = ADC;
 	new_adc_data = 1;
 	adc_reading = ADC;
+	TCNT0 = 6;
 	switch(input) {
 		
 		case Volt :
