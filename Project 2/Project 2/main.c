@@ -143,7 +143,7 @@ int main(void)
 				/* Report ADC Value in mV to user */
 				case 'V':
 				case 'v':
-					adc_mV = (adc_reading/divider); // Calculates ADC in mV
+					adc_mV = ((adc_reading/divider)*5000); // Calculates ADC in mV
 					dtostrf(adc_mV,8,2,str_adc_mV);  // Changes value from double to string
 					sprintf(data, "ADC value = %s mV",str_adc_mV); //Report ADC value in mV
 					sendmsg(data);	
@@ -243,7 +243,7 @@ void init_ports() {
 /* Initializing USART registers */
 void init_USART() {
 	UCSR0B	= (1<<RXEN0) | (1<<TXEN0) | (1<<TXCIE0) | (0<<UCSZ02);  //enable receiver, transmitter, TX Complete and transmit interrupt and setting data to 8 bits
-	UBRR0 = 16;  //baud rate = 90909
+	UBRR0 = 16;  //baud rate = 58823, 57600
 }
 
 /* Initializing Timer0 registers */
