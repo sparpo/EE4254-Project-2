@@ -42,6 +42,11 @@ unsigned char queue[50];       /*character queue*/
 unsigned long int adc_reading; // adc value saved here
 volatile unsigned int new_adc_data; // flag to show new data
 
+uint16_t timecount1;
+uint16_t start_edge, end_edge;
+uint16_t Time_Period_High, Time_Period_Low;		
+uint32_t Time_Period;
+
 unsigned long int adc_mV; // adc value in mV saved here
 unsigned long int temp; // temperature in Centigrade saved here
 unsigned long intOC; // OCR2A value saved here
@@ -61,6 +66,12 @@ int main(void)
 	char str_temp[7]; // string written to user for temperature in /centigrade
 	char str_adc_mV[9]; // string written to user for adc in mV
 
+	start_edge = 0;
+	timecount1 = 0;							/* Initialise timecount  */
+	Time_Period_High = 0;
+	Time_Period_Low = 0;
+	Time_Period = 0;						/* Initialise Time_Period - not measured yet  */
+	
 	int Brightness; // variable that user will enter to set brightness of LED
 	
 	/* Calling Initialized Registers */
@@ -68,7 +79,7 @@ int main(void)
 	init_USART(); // initializes USART
 	init_adc(); // initializes adc
 	init_timer0(); // initializes timer0
-	//init_timer1(); // initializes timer1
+	init_timer1(); // initializes timer1
 	init_timer2(); // initializes timer2
 
 	sei(); /*global interrupt enable */
@@ -171,6 +182,25 @@ int main(void)
 					sendmsg(data);
 				break;
 				
+				/* Report time period low */
+				case 'G':
+				case 'g':
+					sprintf(data, "Time period low = %d", Time_Period_Low); // Report time low
+					sendmsg(data);
+				break;
+				/* Report time period high */
+				case 'H':
+				case 'h':
+					sprintf(data, "Time period high = %d", Time_Period_High); // Report time high
+					sendmsg(data);
+				break;
+				/* Report total time */
+				case 'W':
+				case 'w':
+					sprintf(data, "Time period = %lu", Time_Period); // Report total time
+					sendmsg(data);
+				break;
+				
 				/* Sets LED Brightness Level */
 				case '0' ... '9':
 					
@@ -256,6 +286,11 @@ void init_timer0() {
 
 }
 
+void init_timer1() {
+		TCCR1A = 0;											// Disable all o/p waveforms
+		TCCR1B = ((1<<ICES1) | (2<<CS10));		//  Rising Edge, CLK/8 (2MHz) T1 source
+		TIMSK1 = ((1<<ICIE1) | (1 << TOIE1));
+}
 /* Initializing Timer2 registers */
 void init_timer2() {
 	
@@ -292,7 +327,29 @@ ISR(USART_TX_vect)
 	if (qcntr != sndcntr)
 		UDR0 = queue[sndcntr++];
 }
-
+ISR (TIMER1_OVF_vect) {
+	++timecount1;		// Inc overflow counter on interrupt
+}
+ISR(TIMER1_CAPT_vect) {
+	
+	unsigned long clocks;					/* count of clocks in the pulse - not needed outside the ISR, so make it local */
+	end_edge = ICR1;								/* The C compiler reads two 8bit regs for us  */
+	clocks = ((uint32_t)timecount1 * 65536) + (uint32_t)end_edge - (uint32_t)start_edge;
+	
+	if((1<<ICES1) & TCCR1B) { // if on high period
+		Time_Period_High = (clocks/2);						/* Result is in microseconds  */
+		TCCR1B = TCCR1B & ~(1<<ICES1);		//  next edge is falling
+	} else { //if on low period
+		Time_Period_Low = (clocks/2);						/* Result is in microseconds  */
+		TCCR1B = TCCR1B | (1<<ICES1);		//  next edge is rising
+	}	
+	Time_Period = Time_Period_High+Time_Period_Low;
+	timecount1 = 0;					// Clear timecount for next time around
+	start_edge = end_edge;			// We're counting rising to falling
+	// Save its time for next time through here
+	
+	
+}
 ISR (ADC_vect)//handles ADC interrupts
 {
 	
